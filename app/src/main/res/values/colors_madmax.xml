@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MadMax Material 3 Brand & Accent Colors -->
+    <color name="madmax_primary">#FF3B30</color>
+    <color name="madmax_on_primary">#FFFFFF</color>
+    <color name="madmax_primary_container">#FFD8D6</color>
+    <color name="madmax_on_primary_container">#410002</color>
+
+    <color name="madmax_secondary">#775652</color>
+    <color name="madmax_on_secondary">#FFFFFF</color>
+    <color name="madmax_secondary_container">#FFDAD6</color>
+    <color name="madmax_on_secondary_container">#2C1513</color>
+
+    <color name="madmax_tertiary">#705C2E</color>
+    <color name="madmax_on_tertiary">#FFFFFF</color>
+    <color name="madmax_tertiary_container">#FCE0A6</color>
+    <color name="madmax_on_tertiary_container">#251A00</color>
+
+    <!-- Material 3 Surface & Background (Light) -->
+    <color name="madmax_surface_light">#FFF8F6</color>
+    <color name="madmax_on_surface_light">#231918</color>
+    <color name="madmax_surface_variant_light">#F5DDD9</color>
+    <color name="madmax_on_surface_variant_light">#534341</color>
+    <color name="madmax_outline_light">#857371</color>
+
+    <!-- Material 3 Surface & Background (Dark) -->
+    <color name="madmax_surface_dark">#121212</color>
+    <color name="madmax_surface_container_dark">#1E1E1E</color>
+    <color name="madmax_surface_container_high_dark">#282828</color>
+    <color name="madmax_on_surface_dark">#EDE0DE</color>
+    <color name="madmax_surface_variant_dark">#2D2D2D</color>
+    <color name="madmax_on_surface_variant_dark">#D8C2BF</color>
+    <color name="madmax_outline_dark">#A08C8A</color>
+
+    <!-- Session Status Badges -->
+    <color name="madmax_status_running">#34C759</color>
+    <color name="madmax_status_running_bg">#1A34C759</color>
+    <color name="madmax_status_idle">#8E8E93</color>
+    <color name="madmax_status_idle_bg">#1A8E8E93</color>
+    <color name="madmax_status_error">#FF3B30</color>
+    <color name="madmax_status_error_bg">#1AFF3B30</color>
+
+    <!-- Drawer Selected States -->
+    <color name="madmax_drawer_item_selected_light">#EAEAEA</color>
+    <color name="madmax_drawer_item_selected_dark">#2C2C2E</color>
+    <color name="madmax_drawer_item_unselected_dark">#1C1C1E</color>
+
+    <!-- Developer Dashboard Card Colors -->
+    <color name="madmax_card_bg_dark">#1C1C1E</color>
+    <color name="madmax_card_bg_light">#FFFFFF</color>
+    <color name="madmax_card_stroke_dark">#38383A</color>
+    <color name="madmax_card_stroke_light">#E5E5EA</color>
+</resources>
