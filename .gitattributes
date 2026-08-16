@@ -1,5 +1,16 @@
-*           text=auto
-*.bat       text eol=crlf
-*.gradle    text eol=lf
-*.mk        text eol=lf
-*.sh        text eol=lf
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Explicit binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.so binary
+*.apk binary
+*.aapt2 binary
+*.jar binary
+*.zip binary
+*.tar.gz binary
+*.tar.xz binary
