@@ -2,23 +2,29 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="GitHub Workspace Sync (Phase 2 Preview)">
+        app:title="GitHub Workspace">
 
         <SwitchPreferenceCompat
-            app:key="feature_flag_github_sync"
-            app:title="Enable GitHub Integration"
-            app:summary="Direct repository cloning, dotfile syncing, and CLI auth bridge."
-            app:defaultValue="false" />
+            app:key="feature_flag_github_workspace"
+            app:title="Enable GitHub Workspace"
+            app:summary="Repository manager, branch tracker, quick clone, and Codespaces launcher."
+            app:defaultValue="true" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="GitHub CLI &amp; Codespaces">
+        app:title="GitHub CLI &amp; Auth">
 
         <Preference
-            app:key="gh_cli_info"
-            app:title="Integrated GitHub CLI (`gh`)"
-            app:summary="Full authentication with PAT or SSH keys."
+            app:key="github_cli_status"
+            app:title="GitHub CLI (gh)"
+            app:summary="Integrated with official GitHub CLI toolchain in Termux."
+            app:persistent="false" />
+
+        <Preference
+            app:key="github_codespaces_status"
+            app:title="Codespaces Integration"
+            app:summary="1-tap launch cloud development environments directly in browser."
             app:persistent="false" />
 
     </PreferenceCategory>

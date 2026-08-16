@@ -31,12 +31,44 @@ public enum MadMaxFeature {
         RiskLevel.LOW
     ),
 
-    AI_ASSISTANT(
-        "ai_assistant",
-        "AI Terminal Assistant (Phase 2 Preview)",
-        "Contextual CLI command assistance and error diagnostics.",
-        false,
-        RiskLevel.MODERATE
+    AI_WORKSPACE(
+        "ai_workspace",
+        "AI Command Workspace",
+        "Interactive Material 3 AI assistant panel for command intelligence.",
+        true,
+        RiskLevel.LOW
+    ),
+
+    COMMAND_EXPLAIN(
+        "command_explain",
+        "Command Explanation",
+        "Detailed binary and flag decomposition with safety risk assessment.",
+        true,
+        RiskLevel.LOW
+    ),
+
+    COMMAND_GENERATE(
+        "command_generate",
+        "Natural Language Command Generation",
+        "Generate bash commands from plain English prompts.",
+        true,
+        RiskLevel.LOW
+    ),
+
+    ERROR_ANALYZER(
+        "error_analyzer",
+        "Automated Error Diagnosis",
+        "Intelligent terminal stderr classification and 1-tap safe remediation.",
+        true,
+        RiskLevel.LOW
+    ),
+
+    GITHUB_WORKSPACE(
+        "github_workspace",
+        "GitHub Workspace Hub",
+        "Repository manager, branch tracker, quick clone, and Codespaces launcher.",
+        true,
+        RiskLevel.LOW
     ),
 
     PLUGINS_HUB(
@@ -45,14 +77,6 @@ public enum MadMaxFeature {
         "Decoupled extension plugin runner and service bridge.",
         false,
         RiskLevel.MODERATE
-    ),
-
-    GITHUB_SYNC(
-        "github_sync",
-        "GitHub Workspace Sync (Phase 2 Preview)",
-        "Integrated GitHub CLI workspace and repo management.",
-        false,
-        RiskLevel.LOW
     );
 
     public enum RiskLevel {

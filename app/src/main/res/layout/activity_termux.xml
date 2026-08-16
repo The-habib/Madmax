@@ -83,6 +83,15 @@
                     </LinearLayout>
 
                     <ImageButton
+                        android:id="@+id/ai_workspace_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_ai_workspace"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="AI Command Workspace"
+                        app:tint="?attr/colorPrimary" />
+
+                    <ImageButton
                         android:id="@+id/dev_dashboard_button"
                         android:layout_width="40dp"
                         android:layout_height="40dp"

@@ -572,6 +572,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         }
 
         setDeveloperDashboardButtonView();
+        setAIWorkspaceButtonView();
     }
 
     private int mDevHeaderTapCount = 0;
@@ -600,6 +601,48 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 }
             });
         }
+    }
+
+    private void setAIWorkspaceButtonView() {
+        ImageButton aiButton = findViewById(R.id.ai_workspace_button);
+        if (aiButton != null) {
+            aiButton.setOnClickListener(v -> {
+                getDrawer().closeDrawers();
+                showAIWorkspaceBottomSheet();
+            });
+        }
+    }
+
+    public void showAIWorkspaceBottomSheet() {
+        com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet sheet = com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet.newInstance();
+        sheet.setCommandActionCallback(new com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet.CommandActionCallback() {
+            @Override
+            public void onInsertCommand(@NonNull String command) {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write(command);
+                }
+            }
+
+            @Override
+            public void onExecuteCommand(@NonNull String command) {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write(command + "\n");
+                }
+            }
+
+            @Nullable
+            @Override
+            public String onCaptureTerminalOutput() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.getEmulator() != null && session.getEmulator().getScreen() != null) {
+                    return session.getEmulator().getScreen().getTranscriptText();
+                }
+                return null;
+            }
+        });
+        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet.TAG);
     }
 
     private void setNewSessionButtonView() {

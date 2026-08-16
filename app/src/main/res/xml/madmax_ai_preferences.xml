@@ -2,29 +2,47 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="AI Assistant (Phase 2 Preview)">
+        app:title="AI Command Workspace">
 
         <SwitchPreferenceCompat
-            app:key="feature_flag_ai_assistant"
-            app:title="Enable AI Assistant"
-            app:summary="Contextual shell suggestions and CLI error explanation."
-            app:defaultValue="false" />
+            app:key="feature_flag_ai_workspace"
+            app:title="Enable AI Workspace"
+            app:summary="Interactive bottom sheet for command intelligence and translation."
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_command_explain"
+            app:title="Command Explanation"
+            app:summary="Deep binary and flag decomposition with safety risk assessment."
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_command_generate"
+            app:title="Command Generation"
+            app:summary="Translate natural language prompts to shell commands."
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_error_analyzer"
+            app:title="Automated Error Diagnosis"
+            app:summary="Analyze terminal stderr and provide 1-tap safe fixes."
+            app:defaultValue="true" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="AI Provider Settings (Coming in Phase 2)">
+        app:title="AI Provider &amp; Engine">
 
         <Preference
-            app:key="ai_provider_info"
-            app:title="Supported Providers"
-            app:summary="Local models (Ollama/llama.cpp), OpenAI, Gemini, Anthropic."
+            app:key="ai_provider_active"
+            app:title="Active Provider"
+            app:summary="Offline Built-in Engine (Fast, Private, Zero-Network)"
             app:persistent="false" />
 
         <Preference
-            app:key="ai_privacy_info"
+            app:key="ai_privacy_boundary"
             app:title="Privacy &amp; Data Boundary"
-            app:summary="Zero terminal buffer telemetry without explicit opt-in."
+            app:summary="All analysis is performed 100% locally on device. No terminal data is transmitted."
             app:persistent="false" />
 
     </PreferenceCategory>

@@ -20,21 +20,30 @@ public class MadMaxFeatureRegistryTest {
         Assert.assertNotNull(MadMaxFeature.DEVELOPER_DASHBOARD);
         Assert.assertTrue(MadMaxFeature.DEVELOPER_DASHBOARD.getDefaultValue());
 
-        Assert.assertNotNull(MadMaxFeature.AI_ASSISTANT);
-        Assert.assertFalse(MadMaxFeature.AI_ASSISTANT.getDefaultValue());
+        Assert.assertNotNull(MadMaxFeature.AI_WORKSPACE);
+        Assert.assertTrue(MadMaxFeature.AI_WORKSPACE.getDefaultValue());
+
+        Assert.assertNotNull(MadMaxFeature.COMMAND_EXPLAIN);
+        Assert.assertTrue(MadMaxFeature.COMMAND_EXPLAIN.getDefaultValue());
+
+        Assert.assertNotNull(MadMaxFeature.COMMAND_GENERATE);
+        Assert.assertTrue(MadMaxFeature.COMMAND_GENERATE.getDefaultValue());
+
+        Assert.assertNotNull(MadMaxFeature.ERROR_ANALYZER);
+        Assert.assertTrue(MadMaxFeature.ERROR_ANALYZER.getDefaultValue());
+
+        Assert.assertNotNull(MadMaxFeature.GITHUB_WORKSPACE);
+        Assert.assertTrue(MadMaxFeature.GITHUB_WORKSPACE.getDefaultValue());
 
         Assert.assertNotNull(MadMaxFeature.PLUGINS_HUB);
         Assert.assertFalse(MadMaxFeature.PLUGINS_HUB.getDefaultValue());
-
-        Assert.assertNotNull(MadMaxFeature.GITHUB_SYNC);
-        Assert.assertFalse(MadMaxFeature.GITHUB_SYNC.getDefaultValue());
     }
 
     @Test
     public void testFeatureRiskLevels() {
         Assert.assertEquals(MadMaxFeature.RiskLevel.LOW, MadMaxFeature.MATERIAL_YOU.getRiskLevel());
         Assert.assertEquals(MadMaxFeature.RiskLevel.LOW, MadMaxFeature.DEVELOPER_DASHBOARD.getRiskLevel());
-        Assert.assertEquals(MadMaxFeature.RiskLevel.MODERATE, MadMaxFeature.AI_ASSISTANT.getRiskLevel());
+        Assert.assertEquals(MadMaxFeature.RiskLevel.LOW, MadMaxFeature.AI_WORKSPACE.getRiskLevel());
         Assert.assertEquals(MadMaxFeature.RiskLevel.MODERATE, MadMaxFeature.PLUGINS_HUB.getRiskLevel());
     }
 
@@ -42,12 +51,12 @@ public class MadMaxFeatureRegistryTest {
     public void testFeatureListenerCallback() {
         AtomicBoolean received = new AtomicBoolean(false);
         FeatureFlagListener listener = (feature, isEnabled) -> {
-            if (feature == MadMaxFeature.AI_ASSISTANT && isEnabled) {
+            if (feature == MadMaxFeature.AI_WORKSPACE && isEnabled) {
                 received.set(true);
             }
         };
 
-        listener.onFeatureStateChanged(MadMaxFeature.AI_ASSISTANT, true);
+        listener.onFeatureStateChanged(MadMaxFeature.AI_WORKSPACE, true);
         Assert.assertTrue(received.get());
     }
 }

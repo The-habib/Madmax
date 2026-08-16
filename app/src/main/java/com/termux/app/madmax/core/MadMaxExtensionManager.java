@@ -33,6 +33,9 @@ public final class MadMaxExtensionManager {
         // 2. Initialize Material 3 / Dynamic Colors
         MadMaxThemeManager.initialize(application);
 
+        // 3. Initialize AI Workspace Manager
+        com.termux.app.madmax.ai.core.AIWorkspaceManager.initialize(application);
+
         sInitialized = true;
         Logger.logInfo(LOG_TAG, "MadMax Extension Layer initialized successfully.");
     }

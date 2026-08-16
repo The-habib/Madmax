@@ -44,6 +44,10 @@ public final class SystemMetricsCollector {
         public String totalRam;
         public String availableRam;
         public boolean isLowMemory;
+        public String aiProvider;
+        public int aiTotalQueries;
+        public long aiAvgLatencyMs;
+        public int aiHistoryCount;
 
         @NonNull
         public String toMarkdown() {
@@ -57,7 +61,8 @@ public final class SystemMetricsCollector {
                 "- **Device:** " + deviceManufacturer + " " + deviceModel + "\n" +
                 "- **Primary ABI:** `" + primaryAbi + "`\n" +
                 "- **Supported ABIs:** " + supportedAbis + "\n" +
-                "- **Memory:** " + availableRam + " available / " + totalRam + " total (LowMem: " + isLowMemory + ")\n";
+                "- **Memory:** " + availableRam + " available / " + totalRam + " total (LowMem: " + isLowMemory + ")\n" +
+                "- **AI Engine:** " + aiProvider + " (" + aiTotalQueries + " queries, avg " + aiAvgLatencyMs + "ms, " + aiHistoryCount + " cached items)\n";
         }
     }
 
@@ -94,6 +99,19 @@ public final class SystemMetricsCollector {
             report.totalRam = "Unknown";
             report.availableRam = "Unknown";
             report.isLowMemory = false;
+        }
+
+        try {
+            com.termux.app.madmax.ai.core.AIWorkspaceManager aiManager = com.termux.app.madmax.ai.core.AIWorkspaceManager.getInstance(context);
+            report.aiProvider = aiManager.getCommandService().getActiveProviderType().getDisplayName();
+            report.aiTotalQueries = aiManager.getCommandService().getTotalQueries();
+            report.aiAvgLatencyMs = aiManager.getCommandService().getAverageLatencyMs();
+            report.aiHistoryCount = aiManager.getHistoryManager().getHistoryCount();
+        } catch (Exception e) {
+            report.aiProvider = "Offline Engine";
+            report.aiTotalQueries = 0;
+            report.aiAvgLatencyMs = 0;
+            report.aiHistoryCount = 0;
         }
 
         return report;
