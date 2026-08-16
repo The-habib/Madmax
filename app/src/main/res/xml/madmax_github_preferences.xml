@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="GitHub Workspace Sync (Phase 2 Preview)">
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_github_sync"
+            app:title="Enable GitHub Integration"
+            app:summary="Direct repository cloning, dotfile syncing, and CLI auth bridge."
+            app:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="GitHub CLI &amp; Codespaces">
+
+        <Preference
+            app:key="gh_cli_info"
+            app:title="Integrated GitHub CLI (`gh`)"
+            app:summary="Full authentication with PAT or SSH keys."
+            app:persistent="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

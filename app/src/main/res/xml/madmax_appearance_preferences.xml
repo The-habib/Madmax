@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="Material You &amp; Dynamic Theming">
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_material_you"
+            app:title="Material You Dynamic Colors"
+            app:summary="Extract color palette from system wallpaper on Android 12+."
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_modern_drawer"
+            app:title="Modern Session Drawer"
+            app:summary="Material 3 card styling and process status badges."
+            app:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Visual Customization">
+
+        <Preference
+            app:key="termux_terminal_style_info"
+            app:title="Terminal Fonts &amp; Color Scheme"
+            app:summary="Configure ~/.termux/font.ttf and ~/.termux/colors.properties"
+            app:persistent="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

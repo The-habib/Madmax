@@ -1,49 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        app:key="termux"
-        app:title="@string/termux_preferences_title"
-        app:summary="@string/termux_preferences_summary"
-        app:fragment="com.termux.app.fragments.settings.TermuxPreferencesFragment"/>
+    <!-- ================================================================= -->
+    <!-- 1. MADMAX EXTENSIONS & INNOVATION LAYER                          -->
+    <!-- ================================================================= -->
+    <PreferenceCategory
+        app:title="MadMax Extensions">
 
-    <Preference
-        app:key="termux_api"
-        app:title="@string/termux_api_preferences_title"
-        app:summary="@string/termux_api_preferences_summary"
-        app:isPreferenceVisible="false"
-        app:fragment="com.termux.app.fragments.settings.TermuxAPIPreferencesFragment"/>
+        <Preference
+            app:key="madmax_appearance"
+            app:title="Appearance &amp; Theming"
+            app:summary="Material You dynamic colors, session drawer styling, dark mode"
+            app:fragment="com.termux.app.madmax.settings.fragments.AppearancePreferencesFragment" />
 
-    <Preference
-        app:key="termux_float"
-        app:title="@string/termux_float_preferences_title"
-        app:summary="@string/termux_float_preferences_summary"
-        app:isPreferenceVisible="false"
-        app:fragment="com.termux.app.fragments.settings.TermuxFloatPreferencesFragment"/>
+        <Preference
+            app:key="madmax_ai"
+            app:title="AI Assistant (Phase 2)"
+            app:summary="Contextual shell suggestions and CLI debugging assistant"
+            app:fragment="com.termux.app.madmax.settings.fragments.AiPreferencesFragment" />
 
-    <Preference
-        app:key="termux_tasker"
-        app:title="@string/termux_tasker_preferences_title"
-        app:summary="@string/termux_tasker_preferences_summary"
-        app:isPreferenceVisible="false"
-        app:fragment="com.termux.app.fragments.settings.TermuxTaskerPreferencesFragment"/>
+        <Preference
+            app:key="madmax_plugins"
+            app:title="Plugins Hub (Phase 3)"
+            app:summary="Modular plugin ecosystem and custom extension runners"
+            app:fragment="com.termux.app.madmax.settings.fragments.PluginsPreferencesFragment" />
 
-    <Preference
-        app:key="termux_widget"
-        app:title="@string/termux_widget_preferences_title"
-        app:summary="@string/termux_widget_preferences_summary"
-        app:isPreferenceVisible="false"
-        app:fragment="com.termux.app.fragments.settings.TermuxWidgetPreferencesFragment"/>
+        <Preference
+            app:key="madmax_github"
+            app:title="GitHub Workspace (Phase 2)"
+            app:summary="GitHub CLI integration, repo management, and workspace sync"
+            app:fragment="com.termux.app.madmax.settings.fragments.GitHubPreferencesFragment" />
 
-    <Preference
-        app:key="about"
-        app:title="@string/about_preference_title"
-        app:persistent="false"/>
-    <!-- app:layout="@layout/preference_markdown_text" -->
+        <Preference
+            app:key="madmax_developer"
+            app:title="Developer Tools &amp; Diagnostics"
+            app:summary="Developer dashboard, feature flags, runtime inspection"
+            app:fragment="com.termux.app.madmax.settings.fragments.DeveloperPreferencesFragment" />
 
-    <Preference
-        app:key="donate"
-        app:title="@string/donate_preference_title"
-        app:persistent="false"
-        app:isPreferenceVisible="false"/>
+    </PreferenceCategory>
+
+    <!-- ================================================================= -->
+    <!-- 2. CORE TERMUX & PLUGINS                                         -->
+    <!-- ================================================================= -->
+    <PreferenceCategory
+        app:title="Termux Core">
+
+        <Preference
+            app:key="termux"
+            app:title="@string/termux_preferences_title"
+            app:summary="@string/termux_preferences_summary"
+            app:fragment="com.termux.app.fragments.settings.TermuxPreferencesFragment"/>
+
+        <Preference
+            app:key="termux_api"
+            app:title="@string/termux_api_preferences_title"
+            app:summary="@string/termux_api_preferences_summary"
+            app:isPreferenceVisible="false"
+            app:fragment="com.termux.app.fragments.settings.TermuxAPIPreferencesFragment"/>
+
+        <Preference
+            app:key="termux_float"
+            app:title="@string/termux_float_preferences_title"
+            app:summary="@string/termux_float_preferences_summary"
+            app:isPreferenceVisible="false"
+            app:fragment="com.termux.app.fragments.settings.TermuxFloatPreferencesFragment"/>
+
+        <Preference
+            app:key="termux_tasker"
+            app:title="@string/termux_tasker_preferences_title"
+            app:summary="@string/termux_tasker_preferences_summary"
+            app:isPreferenceVisible="false"
+            app:fragment="com.termux.app.fragments.settings.TermuxTaskerPreferencesFragment"/>
+
+        <Preference
+            app:key="termux_widget"
+            app:title="@string/termux_widget_preferences_title"
+            app:summary="@string/termux_widget_preferences_summary"
+            app:isPreferenceVisible="false"
+            app:fragment="com.termux.app.fragments.settings.TermuxWidgetPreferencesFragment"/>
+
+    </PreferenceCategory>
+
+    <!-- ================================================================= -->
+    <!-- 3. ABOUT & REPOSITORY                                            -->
+    <!-- ================================================================= -->
+    <PreferenceCategory
+        app:title="About">
+
+        <Preference
+            app:key="about"
+            app:title="@string/about_preference_title"
+            app:persistent="false"/>
+
+        <Preference
+            app:key="madmax_repo"
+            app:title="MadMax GitHub Repository"
+            app:summary="https://github.com/The-habib/Madmax"
+            app:persistent="false"/>
+
+        <Preference
+            app:key="donate"
+            app:title="@string/donate_preference_title"
+            app:persistent="false"
+            app:isPreferenceVisible="false"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
