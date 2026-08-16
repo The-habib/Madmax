@@ -565,9 +565,41 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private void setSettingsButtonView() {
         ImageButton settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(v -> {
-            ActivityUtils.startActivity(this, new Intent(this, SettingsActivity.class));
-        });
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(v -> {
+                ActivityUtils.startActivity(this, new Intent(this, SettingsActivity.class));
+            });
+        }
+
+        setDeveloperDashboardButtonView();
+    }
+
+    private int mDevHeaderTapCount = 0;
+    private long mLastDevHeaderTapTime = 0;
+
+    private void setDeveloperDashboardButtonView() {
+        ImageButton devButton = findViewById(R.id.dev_dashboard_button);
+        if (devButton != null) {
+            devButton.setOnClickListener(v -> {
+                ActivityUtils.startActivity(this, new Intent(this, com.termux.app.madmax.dev.DeveloperDashboardActivity.class));
+            });
+        }
+
+        View headerView = findViewById(R.id.madmax_drawer_header);
+        if (headerView != null) {
+            headerView.setOnClickListener(v -> {
+                long now = System.currentTimeMillis();
+                if (now - mLastDevHeaderTapTime > 1500) {
+                    mDevHeaderTapCount = 0;
+                }
+                mLastDevHeaderTapTime = now;
+                mDevHeaderTapCount++;
+                if (mDevHeaderTapCount >= 5) {
+                    mDevHeaderTapCount = 0;
+                    ActivityUtils.startActivity(this, new Intent(this, com.termux.app.madmax.dev.DeveloperDashboardActivity.class));
+                }
+            });
+        }
     }
 
     private void setNewSessionButtonView() {
