@@ -1,0 +1,21 @@
+# MadMax Repository Code Owners
+# Defines explicit review boundaries and protected zones.
+
+# Protected Terminal Engine Core (DO NOT MODIFY)
+/terminal-emulator/                        @The-habib
+/termux-shared/src/main/cpp/local-socket.cpp @The-habib
+/terminal-emulator/src/main/jni/termux.c    @The-habib
+
+# MadMax Extension Layer & Features
+/app/src/main/java/com/termux/app/madmax/  @The-habib
+/app/src/main/res/xml/madmax_*             @The-habib
+/app/src/main/res/values/colors_madmax.xml @The-habib
+
+# Build System & CI/CD Workflows
+/.github/workflows/                        @The-habib
+/gradle/                                   @The-habib
+/build.gradle                              @The-habib
+/app/build.gradle                          @The-habib
+/termux-shared/build.gradle                @The-habib
+/terminal-view/build.gradle                @The-habib
+/terminal-emulator/build.gradle            @The-habib
