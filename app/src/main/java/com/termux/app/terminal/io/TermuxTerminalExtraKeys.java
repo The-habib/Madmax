@@ -105,6 +105,10 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
             mActivity.showQuickActionsBottomSheet();
         } else if ("AI".equals(key)) {
             mActivity.showAIWorkspaceBottomSheet();
+        } else if ("PALETTE".equals(key) || "CMD".equals(key)) {
+            mActivity.showCommandPalette();
+        } else if ("THEME".equals(key) || "THEMES".equals(key)) {
+            mActivity.showTerminalThemesBottomSheet();
         } else if ("CLEAR".equals(key)) {
             TerminalSession session = mActivity.getCurrentSession();
             if (session != null && session.isRunning()) {

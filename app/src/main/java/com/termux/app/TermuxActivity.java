@@ -663,7 +663,26 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public void showQuickActionsBottomSheet(int initialTab) {
         com.termux.app.madmax.ui.actions.QuickActionsBottomSheet sheet =
             com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.newInstance(initialTab);
-        sheet.setActionCallback(new com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TerminalActionCallback() {
+        sheet.setActionCallback(createTerminalActionCallback());
+        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TAG);
+    }
+
+    public void showCommandPalette() {
+        com.termux.app.madmax.ui.palette.CommandPaletteBottomSheet sheet =
+            com.termux.app.madmax.ui.palette.CommandPaletteBottomSheet.newInstance();
+        sheet.setActionCallback(createTerminalActionCallback());
+        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ui.palette.CommandPaletteBottomSheet.TAG);
+    }
+
+    public void showTerminalThemesBottomSheet() {
+        com.termux.app.madmax.ui.theme.TerminalThemeBottomSheet sheet =
+            com.termux.app.madmax.ui.theme.TerminalThemeBottomSheet.newInstance();
+        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ui.theme.TerminalThemeBottomSheet.TAG);
+    }
+
+    @NonNull
+    private com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TerminalActionCallback createTerminalActionCallback() {
+        return new com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TerminalActionCallback() {
             @Override
             public void onInsertText(@NonNull String text) {
                 TerminalSession session = getCurrentSession();
@@ -816,8 +835,17 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             public void onOpenAIWorkspace() {
                 showAIWorkspaceBottomSheet();
             }
-        });
-        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TAG);
+
+            @Override
+            public void onOpenCommandPalette() {
+                showCommandPalette();
+            }
+
+            @Override
+            public void onOpenTerminalThemes() {
+                showTerminalThemesBottomSheet();
+            }
+        };
     }
 
     private void setNewSessionButtonView() {

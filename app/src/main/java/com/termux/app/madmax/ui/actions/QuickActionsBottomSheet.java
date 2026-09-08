@@ -74,6 +74,8 @@ public class QuickActionsBottomSheet extends BottomSheetDialogFragment {
         default void onScrollToBottom() {}
         @Nullable default String onCaptureTranscript() { return null; }
         default void onOpenAIWorkspace() {}
+        default void onOpenCommandPalette() {}
+        default void onOpenTerminalThemes() {}
     }
 
     private TerminalActionCallback mCallback;
@@ -180,6 +182,46 @@ public class QuickActionsBottomSheet extends BottomSheetDialogFragment {
     private void renderControlsTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
+
+        // Command Palette Spotlight Banner Card
+        MaterialCardView paletteCard = createCard(context);
+        paletteCard.setStrokeColor(0xFF64D2FF);
+        paletteCard.setStrokeWidth(dpToPx(context, 1));
+        LinearLayout paletteInner = createCardInnerLayout(context);
+        paletteInner.setBackground(createRoundedBackground(context, 0xFF14222B, 0x00000000, 10));
+
+        LinearLayout palRow = new LinearLayout(context);
+        palRow.setOrientation(LinearLayout.HORIZONTAL);
+        palRow.setGravity(Gravity.CENTER_VERTICAL);
+        palRow.addView(createIconBadge(context, R.drawable.ic_explain, 0xFF64D2FF, 36));
+
+        LinearLayout palTextCol = new LinearLayout(context);
+        palTextCol.setOrientation(LinearLayout.VERTICAL);
+        palTextCol.setPadding(dpToPx(context, 12), 0, 0, 0);
+        palTextCol.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        TextView palTitle = new TextView(context);
+        palTitle.setText("Command Palette (Spotlight)");
+        palTitle.setTextSize(13);
+        palTitle.setTypeface(null, Typeface.BOLD);
+        palTitle.setTextColor(0xFFFFFFFF);
+        palTextCol.addView(palTitle);
+
+        TextView palSub = new TextView(context);
+        palSub.setText("Fuzzy search and execute any command, action, or snippet");
+        palSub.setTextSize(11);
+        palSub.setTextColor(0xFF8E8E93);
+        palSub.setPadding(0, dpToPx(context, 2), 0, 0);
+        palTextCol.addView(palSub);
+
+        palRow.addView(palTextCol);
+        paletteInner.addView(palRow);
+        paletteCard.addView(paletteInner);
+        paletteCard.setOnClickListener(v -> {
+            dismiss();
+            if (mCallback != null) mCallback.onOpenCommandPalette();
+        });
+        layout.addView(paletteCard);
 
         layout.addView(createSectionHeader(context, "Signals & Terminal Operations"));
         layout.addView(createSectionSubtext(context, "Direct keyboard signals and buffer manipulation"));
@@ -397,6 +439,49 @@ public class QuickActionsBottomSheet extends BottomSheetDialogFragment {
         fontInner.addView(btnResetFont);
         fontCard.addView(fontInner);
         layout.addView(fontCard);
+
+        // --- Themes Section ---
+        layout.addView(createSectionHeader(context, "Terminal Color Schemes"));
+        layout.addView(createSectionSubtext(context, "Choose high-contrast developer themes (Dracula, Nord, Cyber Dark...)"));
+
+        MaterialCardView themeCard = createCard(context);
+        themeCard.setStrokeColor(0xFFBF5AF2);
+        themeCard.setStrokeWidth(dpToPx(context, 1));
+        LinearLayout themeInner = createCardInnerLayout(context);
+        themeInner.setBackground(createRoundedBackground(context, 0xFF211526, 0x00000000, 10));
+
+        LinearLayout themeRow = new LinearLayout(context);
+        themeRow.setOrientation(LinearLayout.HORIZONTAL);
+        themeRow.setGravity(Gravity.CENTER_VERTICAL);
+        themeRow.addView(createIconBadge(context, R.drawable.ic_palette, 0xFFBF5AF2, 36));
+
+        LinearLayout themeTextCol = new LinearLayout(context);
+        themeTextCol.setOrientation(LinearLayout.VERTICAL);
+        themeTextCol.setPadding(dpToPx(context, 12), 0, 0, 0);
+        themeTextCol.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        TextView themeTitle = new TextView(context);
+        themeTitle.setText("Terminal Color Themes");
+        themeTitle.setTextSize(13);
+        themeTitle.setTypeface(null, Typeface.BOLD);
+        themeTitle.setTextColor(0xFFFFFFFF);
+        themeTextCol.addView(themeTitle);
+
+        TextView themeSub = new TextView(context);
+        themeSub.setText("Select from 8 curated ANSI palettes with live preview");
+        themeSub.setTextSize(11);
+        themeSub.setTextColor(0xFF8E8E93);
+        themeSub.setPadding(0, dpToPx(context, 2), 0, 0);
+        themeTextCol.addView(themeSub);
+
+        themeRow.addView(themeTextCol);
+        themeInner.addView(themeRow);
+        themeCard.addView(themeInner);
+        themeCard.setOnClickListener(v -> {
+            dismiss();
+            if (mCallback != null) mCallback.onOpenTerminalThemes();
+        });
+        layout.addView(themeCard);
 
         // --- Hardware & Display Settings ---
         layout.addView(createSectionHeader(context, "Display & Input"));

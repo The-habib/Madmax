@@ -49,6 +49,66 @@
             android:textAllCaps="true"
             android:contentDescription="Open Quick Actions and Accessibility Menu" />
 
+        <!-- PALETTE (CMD) Key -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_palette"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_marginHorizontal="2.5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="0dp"
+            android:gravity="center"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="6dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#5064D2FF"
+            app:backgroundTint="#14222B"
+            app:rippleColor="#4064D2FF"
+            app:icon="@drawable/ic_explain"
+            app:iconSize="13dp"
+            app:iconPadding="5dp"
+            app:iconGravity="textStart"
+            app:iconTint="#64D2FF"
+            android:text="CMD"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:contentDescription="Open Spotlight Command Palette" />
+
+        <!-- THEME Key -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_marginHorizontal="2.5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="0dp"
+            android:gravity="center"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="6dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#50BF5AF2"
+            app:backgroundTint="#211526"
+            app:rippleColor="#40BF5AF2"
+            app:icon="@drawable/ic_palette"
+            app:iconSize="13dp"
+            app:iconPadding="5dp"
+            app:iconGravity="textStart"
+            app:iconTint="#BF5AF2"
+            android:text="THEME"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:contentDescription="Select Terminal Color Theme" />
+
         <!-- AI Key -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_toolbar_ai"

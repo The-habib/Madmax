@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/colorSurface"
-    android:paddingBottom="24dp">
+    android:background="@color/madmax_surface_dark"
+    android:paddingBottom="16dp">
 
     <!-- Drag Handle -->
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/drag_handle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:tint="#4A4A52" />
 
     <!-- AI Header Bar -->
     <LinearLayout
@@ -22,29 +23,38 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="20dp"
-        android:paddingBottom="8dp">
+        android:paddingTop="2dp"
+        android:paddingBottom="12dp">
 
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_ai_workspace"
-            app:tint="?attr/colorPrimary"
-            android:contentDescription="AI Icon" />
+        <!-- Icon Container Badge -->
+        <FrameLayout
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_ai_icon_badge">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_ai_workspace"
+                app:tint="#CE93D8"
+                android:contentDescription="AI Workspace" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="12dp">
+            android:paddingStart="14dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AI Workspace"
+                android:text="AI Command Workspace"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface" />
+                android:textColor="#F4F4F6" />
 
             <TextView
                 android:id="@+id/ai_provider_badge"
@@ -52,17 +62,17 @@
                 android:layout_height="wrap_content"
                 android:text="Offline Engine • Zero Network Latency"
                 android:textSize="11sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="#8E8E93" />
 
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btn_close_ai_sheet"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="?android:attr/textColorSecondary"
+            app:tint="#8E8E93"
             android:contentDescription="Close" />
 
     </LinearLayout>
@@ -71,25 +81,40 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/ai_tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         app:tabMode="scrollable"
-        app:tabIndicatorColor="?attr/colorPrimary"
-        app:tabSelectedTextColor="?attr/colorPrimary"
-        app:tabTextColor="?android:attr/textColorSecondary"
-        android:background="?attr/colorSurface"
-        app:tabGravity="fill" />
+        app:tabGravity="start"
+        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorColor="#CE93D8"
+        app:tabIndicatorFullWidth="false"
+        app:tabSelectedTextColor="#CE93D8"
+        app:tabTextColor="#8E8E93"
+        app:tabIconTint="#CE93D8"
+        app:tabInlineLabel="true"
+        app:tabTextAppearance="@style/MadMax.TabTextAppearance"
+        android:background="@color/madmax_surface_dark" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/colorSurfaceVariant"
-        android:alpha="0.3" />
+        android:background="#222228" />
 
-    <!-- Dynamic Container for Active Tab -->
-    <FrameLayout
-        android:id="@+id/ai_tab_container"
+    <!-- Scrollable Container for Active Tab -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp" />
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <FrameLayout
+            android:id="@+id/ai_tab_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="260dp"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp" />
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

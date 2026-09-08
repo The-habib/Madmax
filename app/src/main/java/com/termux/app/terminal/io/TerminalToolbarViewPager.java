@@ -92,6 +92,16 @@ public class TerminalToolbarViewPager {
                 btnMenu.setOnClickListener(v -> mActivity.showQuickActionsBottomSheet());
             }
 
+            View btnPalette = layout.findViewById(R.id.btn_toolbar_palette);
+            if (btnPalette != null) {
+                btnPalette.setOnClickListener(v -> mActivity.showCommandPalette());
+            }
+
+            View btnTheme = layout.findViewById(R.id.btn_toolbar_theme);
+            if (btnTheme != null) {
+                btnTheme.setOnClickListener(v -> mActivity.showTerminalThemesBottomSheet());
+            }
+
             View btnAi = layout.findViewById(R.id.btn_toolbar_ai);
             if (btnAi != null) {
                 btnAi.setOnClickListener(v -> mActivity.showAIWorkspaceBottomSheet());
