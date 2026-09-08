@@ -1,38 +1,34 @@
 package com.termux.app.terminal;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
+import com.google.android.material.card.MaterialCardView;
 import com.termux.R;
 import com.termux.app.TermuxActivity;
 import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession;
-import com.termux.shared.theme.NightMode;
-import com.termux.shared.theme.ThemeUtils;
 import com.termux.terminal.TerminalSession;
 
 import java.util.List;
 
+/**
+ * Modern Material 3 controller for terminal session items in the navigation drawer.
+ */
 public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     final TermuxActivity mActivity;
-
-    final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-    final StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 
     public TermuxSessionsListViewController(TermuxActivity activity, List<TermuxSession> sessionList) {
         super(activity.getApplicationContext(), R.layout.item_terminal_sessions_list, sessionList);
@@ -49,61 +45,131 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             sessionRowView = inflater.inflate(R.layout.item_terminal_sessions_list, parent, false);
         }
 
-        TextView sessionTitleView = sessionRowView.findViewById(R.id.session_title);
+        MaterialCardView card = sessionRowView.findViewById(R.id.session_card);
+        View activeIndicator = sessionRowView.findViewById(R.id.session_active_indicator);
+        FrameLayout iconBadge = sessionRowView.findViewById(R.id.session_icon_badge);
+        ImageView sessionIcon = sessionRowView.findViewById(R.id.session_icon);
+        TextView titleView = sessionRowView.findViewById(R.id.session_title);
+        TextView subtitleView = sessionRowView.findViewById(R.id.session_subtitle);
+        TextView statusPill = sessionRowView.findViewById(R.id.session_status_pill);
+        ImageButton closeButton = sessionRowView.findViewById(R.id.session_close_button);
 
-        TerminalSession sessionAtRow = getItem(position).getTerminalSession();
-        if (sessionAtRow == null) {
-            sessionTitleView.setText("null session");
+        TermuxSession item = getItem(position);
+        if (item == null || item.getTerminalSession() == null) {
+            if (titleView != null) titleView.setText("null session");
             return sessionRowView;
         }
 
-        boolean shouldEnableDarkTheme = ThemeUtils.shouldEnableDarkTheme(mActivity, NightMode.getAppNightMode().getName());
+        final TerminalSession sessionAtRow = item.getTerminalSession();
+        final TerminalSession currentSession = mActivity.getCurrentSession();
+        final boolean isActive = (sessionAtRow == currentSession);
 
-        if (shouldEnableDarkTheme) {
-            sessionTitleView.setBackground(
-                ContextCompat.getDrawable(mActivity, R.drawable.session_background_black_selected)
-            );
+        // Active State Styling
+        if (activeIndicator != null) {
+            activeIndicator.setVisibility(isActive ? View.VISIBLE : View.INVISIBLE);
         }
 
+        if (card != null) {
+            if (isActive) {
+                card.setStrokeColor(0x80FF3B30);
+                card.setCardBackgroundColor(0xFF241616);
+            } else {
+                card.setStrokeColor(0xFF282830);
+                card.setCardBackgroundColor(0xFF17171C);
+            }
+        }
+
+        if (iconBadge != null) {
+            iconBadge.setBackgroundResource(isActive ? R.drawable.bg_icon_badge_primary : R.drawable.bg_session_icon_container);
+        }
+
+        if (sessionIcon != null) {
+            sessionIcon.setColorFilter(isActive ? 0xFFFF3B30 : 0xFFD0D0D4);
+        }
+
+        // Title and Subtitle Binding
         String name = sessionAtRow.mSessionName;
-        String sessionTitle = sessionAtRow.getTitle();
+        String displayIndex = String.valueOf(position + 1);
+        String sessionNamePart = TextUtils.isEmpty(name) ? "Session " + displayIndex : name;
 
-        String numberPart = "[" + (position + 1) + "] ";
-        String sessionNamePart = (TextUtils.isEmpty(name) ? "" : name);
-        String sessionTitlePart = (TextUtils.isEmpty(sessionTitle) ? "" : ((sessionNamePart.isEmpty() ? "" : "\n") + sessionTitle));
-
-        String fullSessionTitle = numberPart + sessionNamePart + sessionTitlePart;
-        SpannableString fullSessionTitleStyled = new SpannableString(fullSessionTitle);
-        fullSessionTitleStyled.setSpan(boldSpan, 0, numberPart.length() + sessionNamePart.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        fullSessionTitleStyled.setSpan(italicSpan, numberPart.length() + sessionNamePart.length(), fullSessionTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        sessionTitleView.setText(fullSessionTitleStyled);
-
-        boolean sessionRunning = sessionAtRow.isRunning();
-
-        if (sessionRunning) {
-            sessionTitleView.setPaintFlags(sessionTitleView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            sessionTitleView.setPaintFlags(sessionTitleView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if (titleView != null) {
+            titleView.setText(displayIndex + ". " + sessionNamePart);
+            titleView.setTextColor(isActive ? 0xFFFFFFFF : 0xFFF2F2F5);
         }
-        int defaultColor = shouldEnableDarkTheme ? Color.WHITE : Color.BLACK;
-        int color = sessionRunning || sessionAtRow.getExitStatus() == 0 ? defaultColor : Color.RED;
-        sessionTitleView.setTextColor(color);
+
+        String sessionTitle = sessionAtRow.getTitle();
+        String cwd = sessionAtRow.getCwd();
+        String subtitleText = !TextUtils.isEmpty(sessionTitle) ? sessionTitle : (!TextUtils.isEmpty(cwd) ? cwd : "bash");
+
+        if (subtitleView != null) {
+            subtitleView.setText(subtitleText);
+        }
+
+        // Status Pill Binding
+        boolean isRunning = sessionAtRow.isRunning();
+        if (statusPill != null) {
+            if (isRunning) {
+                statusPill.setText("RUNNING");
+                statusPill.setTextColor(0xFF34C759);
+                statusPill.setBackgroundResource(R.drawable.bg_session_running_pill);
+            } else {
+                int exitStatus = sessionAtRow.getExitStatus();
+                statusPill.setText(exitStatus == 0 ? "DONE" : "EXIT " + exitStatus);
+                statusPill.setTextColor(0xFF8E8E93);
+                statusPill.setBackgroundResource(R.drawable.bg_session_exited_pill);
+            }
+        }
+
+        if (titleView != null) {
+            if (isRunning) {
+                titleView.setPaintFlags(titleView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                titleView.setPaintFlags(titleView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+        }
+
+        // Click actions directly on card
+        if (card != null) {
+            card.setOnClickListener(v -> {
+                mActivity.getTermuxTerminalSessionClient().setCurrentSession(sessionAtRow);
+                mActivity.getDrawer().closeDrawers();
+            });
+
+            card.setOnLongClickListener(v -> {
+                mActivity.getTermuxTerminalSessionClient().renameSession(sessionAtRow);
+                return true;
+            });
+        }
+
+        // Close / Terminate Button
+        if (closeButton != null) {
+            closeButton.setOnClickListener(v -> {
+                if (sessionAtRow.isRunning()) {
+                    sessionAtRow.finishIfRunning();
+                }
+                mActivity.getTermuxTerminalSessionClient().removeFinishedSession(sessionAtRow);
+            });
+        }
+
         return sessionRowView;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TermuxSession clickedSession = getItem(position);
-        mActivity.getTermuxTerminalSessionClient().setCurrentSession(clickedSession.getTerminalSession());
-        mActivity.getDrawer().closeDrawers();
+        if (clickedSession != null) {
+            mActivity.getTermuxTerminalSessionClient().setCurrentSession(clickedSession.getTerminalSession());
+            mActivity.getDrawer().closeDrawers();
+        }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         final TermuxSession selectedSession = getItem(position);
-        mActivity.getTermuxTerminalSessionClient().renameSession(selectedSession.getTerminalSession());
-        return true;
+        if (selectedSession != null) {
+            mActivity.getTermuxTerminalSessionClient().renameSession(selectedSession.getTerminalSession());
+            return true;
+        }
+        return false;
     }
-
 }

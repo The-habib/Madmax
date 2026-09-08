@@ -47,6 +47,8 @@ public class QuickActionsTest {
         callback.onScrollToTop();
         callback.onScrollToBottom();
         callback.onOpenAIWorkspace();
+        callback.onOpenCommandPalette();
+        callback.onOpenTerminalThemes();
         Assert.assertEquals(14, callback.getCurrentFontSize());
         Assert.assertFalse(callback.isWakeLockHeld());
         Assert.assertNull(callback.onCaptureTranscript());

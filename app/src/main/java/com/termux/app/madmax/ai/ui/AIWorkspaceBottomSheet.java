@@ -4,14 +4,20 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Material 3 AI Command Intelligence Workspace bottom sheet.
+ * Executive Material 3 AI Command Intelligence Workspace bottom sheet.
  */
 public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
 
@@ -124,6 +130,7 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void renderCurrentTab() {
+        if (mTabContainer == null) return;
         mTabContainer.removeAllViews();
         switch (mCurrentTab) {
             case 0:
@@ -144,13 +151,15 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         }
     }
 
-    // --- TAB 1: EXPLAIN ---
+    // =========================================================================
+    // TAB 1: EXPLAIN
+    // =========================================================================
     private void renderExplainTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
 
-        TextView label = createSectionHeader(context, "Command Inspector & Flag Decomposer");
-        layout.addView(label);
+        layout.addView(createSectionHeader(context, "Command Inspector & Flag Decomposer"));
+        layout.addView(createSectionSubtext(context, "Deconstruct Unix syntax, verify security risk, and understand each flag"));
 
         EditText input = createMonospaceInputField(context, "Enter shell command to explain (e.g. tar -czvf archive.tar.gz /data)");
         layout.addView(input);
@@ -158,7 +167,7 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         ProgressBar progress = createProgressBar(context);
         layout.addView(progress);
 
-        MaterialButton btnExplain = createPrimaryButton(context, "Analyze Command", R.drawable.ic_explain);
+        MaterialButton btnExplain = createPrimaryButton(context, "Analyze Command", R.drawable.ic_explain, 0xFF8E24AA);
         layout.addView(btnExplain);
 
         LinearLayout resultContainer = createBaseVerticalLayout(context);
@@ -195,47 +204,113 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
     private void displayExplanationResult(LinearLayout container, AICommandExplanation explanation) {
         Context context = requireContext();
 
-        // Risk badge + Binary Header
         MaterialCardView card = createResultCard(context);
-        LinearLayout inner = createBaseVerticalLayout(context);
-        inner.setPadding(24, 24, 24, 24);
+        LinearLayout inner = createCardInnerLayout(context);
 
+        // Header row: Command & Risk Badge
+        LinearLayout headerRow = new LinearLayout(context);
+        headerRow.setOrientation(LinearLayout.HORIZONTAL);
+        headerRow.setGravity(Gravity.CENTER_VERTICAL);
+
+        TextView cmdTitle = new TextView(context);
+        cmdTitle.setText(explanation.getBinaryName());
+        cmdTitle.setTextSize(14);
+        cmdTitle.setTypeface(null, Typeface.BOLD);
+        cmdTitle.setTextColor(0xFFF2F2F5);
+        cmdTitle.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        headerRow.addView(cmdTitle);
+
+        // Risk Pill Badge
         TextView riskBadge = new TextView(context);
-        riskBadge.setText("Risk: " + explanation.getRiskLevel().getLabel().toUpperCase());
-        riskBadge.setTextColor(explanation.getRiskLevel().getColor());
-        riskBadge.setTextSize(12);
-        riskBadge.setTypeface(null, android.graphics.Typeface.BOLD);
-        inner.addView(riskBadge);
+        String riskLabel = explanation.getRiskLevel().getLabel().toUpperCase();
+        riskBadge.setText("RISK: " + riskLabel);
+        riskBadge.setTextSize(9);
+        riskBadge.setTypeface(null, Typeface.BOLD);
+        int riskColor = explanation.getRiskLevel().getColor();
+        riskBadge.setTextColor(riskColor);
+        int padH = dpToPx(context, 8);
+        int padV = dpToPx(context, 3);
+        riskBadge.setPadding(padH, padV, padH, padV);
+        riskBadge.setBackground(createRoundedBackground(context, (riskColor & 0x00FFFFFF) | 0x20000000, (riskColor & 0x00FFFFFF) | 0x40000000, 6));
+        headerRow.addView(riskBadge);
+        inner.addView(headerRow);
 
-        if (explanation.getSafetyWarning() != null) {
-            TextView warning = new TextView(context);
-            warning.setText("⚠️ " + explanation.getSafetyWarning());
-            warning.setTextColor(0xFFFF3B30);
-            warning.setTextSize(12);
-            warning.setPadding(0, 8, 0, 8);
-            inner.addView(warning);
+        // Raw Command Box
+        HorizontalScrollView cmdBoxScroll = createTerminalCodeBox(context, explanation.getRawCommand());
+        inner.addView(cmdBoxScroll);
+
+        // Safety Warning Box (if any)
+        if (explanation.getSafetyWarning() != null && !explanation.getSafetyWarning().isEmpty()) {
+            LinearLayout warnBox = new LinearLayout(context);
+            warnBox.setOrientation(LinearLayout.HORIZONTAL);
+            warnBox.setBackground(createRoundedBackground(context, 0x25FF3B30, 0x50FF3B30, 8));
+            int warnPad = dpToPx(context, 10);
+            warnBox.setPadding(warnPad, warnPad, warnPad, warnPad);
+            LinearLayout.LayoutParams warnLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            warnLp.topMargin = dpToPx(context, 10);
+            warnBox.setLayoutParams(warnLp);
+
+            TextView warnIcon = new TextView(context);
+            warnIcon.setText("!");
+            warnIcon.setTypeface(null, Typeface.BOLD);
+            warnIcon.setTextColor(0xFFFF3B30);
+            warnIcon.setTextSize(14);
+            warnBox.addView(warnIcon);
+
+            TextView warnText = new TextView(context);
+            warnText.setText(explanation.getSafetyWarning());
+            warnText.setTextColor(0xFFFF8A80);
+            warnText.setTextSize(11);
+            warnText.setPadding(dpToPx(context, 8), 0, 0, 0);
+            warnBox.addView(warnText);
+
+            inner.addView(warnBox);
         }
 
+        // Summary Description
         TextView summary = new TextView(context);
         summary.setText(explanation.getSummary());
-        summary.setTextSize(14);
-        summary.setPadding(0, 12, 0, 12);
+        summary.setTextSize(12);
+        summary.setTextColor(0xFFE0E0E6);
+        summary.setPadding(0, dpToPx(context, 10), 0, dpToPx(context, 8));
         inner.addView(summary);
 
+        // Flags Breakdown Table
         if (!explanation.getFlagsBreakdown().isEmpty()) {
             TextView flagsTitle = new TextView(context);
-            flagsTitle.setText("Detected Flags & Arguments:");
-            flagsTitle.setTextSize(12);
-            flagsTitle.setTypeface(null, android.graphics.Typeface.BOLD);
-            flagsTitle.setPadding(0, 8, 0, 4);
+            flagsTitle.setText("DETECTED FLAGS & PARAMETERS");
+            flagsTitle.setTextSize(10);
+            flagsTitle.setTypeface(null, Typeface.BOLD);
+            flagsTitle.setTextColor(0xFF8E8E93);
+            flagsTitle.setLetterSpacing(0.06f);
+            flagsTitle.setPadding(0, dpToPx(context, 6), 0, dpToPx(context, 6));
             inner.addView(flagsTitle);
 
             for (Map.Entry<String, String> entry : explanation.getFlagsBreakdown().entrySet()) {
-                TextView flagItem = new TextView(context);
-                flagItem.setText("• " + entry.getKey() + " → " + entry.getValue());
-                flagItem.setTextSize(12);
-                flagItem.setPadding(8, 2, 0, 2);
-                inner.addView(flagItem);
+                LinearLayout flagRow = new LinearLayout(context);
+                flagRow.setOrientation(LinearLayout.HORIZONTAL);
+                flagRow.setGravity(Gravity.CENTER_VERTICAL);
+                flagRow.setPadding(0, dpToPx(context, 3), 0, dpToPx(context, 3));
+
+                TextView flagBadge = new TextView(context);
+                flagBadge.setText(entry.getKey());
+                flagBadge.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+                flagBadge.setTextSize(11);
+                flagBadge.setTextColor(0xFF80DEEA);
+                flagBadge.setBackground(createRoundedBackground(context, 0xFF14141A, 0xFF282834, 4));
+                int fPadH = dpToPx(context, 6);
+                int fPadV = dpToPx(context, 2);
+                flagBadge.setPadding(fPadH, fPadV, fPadH, fPadV);
+                flagRow.addView(flagBadge);
+
+                TextView flagDesc = new TextView(context);
+                flagDesc.setText(entry.getValue());
+                flagDesc.setTextSize(11);
+                flagDesc.setTextColor(0xFFB0B0B8);
+                flagDesc.setPadding(dpToPx(context, 8), 0, 0, 0);
+                flagRow.addView(flagDesc);
+
+                inner.addView(flagRow);
             }
         }
 
@@ -247,38 +322,48 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         container.addView(card);
     }
 
-    // --- TAB 2: GENERATE ---
+    // =========================================================================
+    // TAB 2: GENERATE
+    // =========================================================================
     private void renderGenerateTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
 
-        TextView label = createSectionHeader(context, "Natural Language to Shell Translator");
-        layout.addView(label);
+        layout.addView(createSectionHeader(context, "Natural Language to Shell Translator"));
+        layout.addView(createSectionSubtext(context, "Describe desired terminal tasks in plain English to generate correct syntax"));
 
-        EditText input = createInputField(context, "Describe what you want to do in plain English...");
+        EditText input = createInputField(context, "Describe what you want to do (e.g. Find all files over 100MB and sort by size)");
         layout.addView(input);
 
         // Quick Suggestion Chips
         TextView chipLabel = new TextView(context);
-        chipLabel.setText("Quick prompts:");
-        chipLabel.setTextSize(12);
-        chipLabel.setPadding(0, 8, 0, 4);
+        chipLabel.setText("QUICK PROMPTS");
+        chipLabel.setTextSize(10);
+        chipLabel.setTypeface(null, Typeface.BOLD);
+        chipLabel.setTextColor(0xFF8E8E93);
+        chipLabel.setLetterSpacing(0.06f);
+        chipLabel.setPadding(0, dpToPx(context, 10), 0, dpToPx(context, 6));
         layout.addView(chipLabel);
 
+        HorizontalScrollView chipScroll = new HorizontalScrollView(context);
+        chipScroll.setHorizontalScrollBarEnabled(false);
+        chipScroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
         ChipGroup chipGroup = new ChipGroup(context);
-        chipGroup.setSingleLine(false);
+        chipGroup.setSingleLine(true);
         addChip(chipGroup, "Find files > 100MB", input);
         addChip(chipGroup, "Kill port 8080", input);
         addChip(chipGroup, "Extract tar.gz", input);
         addChip(chipGroup, "Reverse SSH tunnel", input);
         addChip(chipGroup, "Docker system prune", input);
-        addChip(chipGroup, "Disk space usage", input);
-        layout.addView(chipGroup);
+        addChip(chipGroup, "Check disk space", input);
+        chipScroll.addView(chipGroup);
+        layout.addView(chipScroll);
 
         ProgressBar progress = createProgressBar(context);
         layout.addView(progress);
 
-        MaterialButton btnGenerate = createPrimaryButton(context, "Generate Command", R.drawable.ic_generate);
+        MaterialButton btnGenerate = createPrimaryButton(context, "Generate Command", R.drawable.ic_generate, 0xFFFF3B30);
         layout.addView(btnGenerate);
 
         LinearLayout resultContainer = createBaseVerticalLayout(context);
@@ -313,9 +398,15 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void addChip(ChipGroup group, String text, EditText targetInput) {
-        Chip chip = new Chip(group.getContext());
+        Context context = group.getContext();
+        Chip chip = new Chip(context);
         chip.setText(text);
         chip.setTextSize(11);
+        chip.setChipCornerRadius(dpToPx(context, 14));
+        chip.setChipBackgroundColor(ColorStateList.valueOf(0xFF202028));
+        chip.setChipStrokeColor(ColorStateList.valueOf(0xFF33333E));
+        chip.setChipStrokeWidth(dpToPx(context, 1));
+        chip.setTextColor(0xFFE0E0E6);
         chip.setOnClickListener(v -> {
             targetInput.setText(text);
             targetInput.setSelection(text.length());
@@ -326,22 +417,24 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
     private void displayGenerationResult(LinearLayout container, AICommandGeneration gen) {
         Context context = requireContext();
         MaterialCardView card = createResultCard(context);
-        LinearLayout inner = createBaseVerticalLayout(context);
-        inner.setPadding(24, 24, 24, 24);
+        LinearLayout inner = createCardInnerLayout(context);
 
-        TextView cmdBox = new TextView(context);
-        cmdBox.setText(gen.getGeneratedCommand());
-        cmdBox.setTextSize(14);
-        cmdBox.setTypeface(android.graphics.Typeface.MONOSPACE);
-        cmdBox.setTextColor(0xFF007AFF);
-        cmdBox.setBackgroundColor(0x15007AFF);
-        cmdBox.setPadding(16, 16, 16, 16);
+        TextView label = new TextView(context);
+        label.setText("GENERATED SHELL COMMAND");
+        label.setTextSize(10);
+        label.setTypeface(null, Typeface.BOLD);
+        label.setTextColor(0xFF34C759);
+        label.setLetterSpacing(0.06f);
+        inner.addView(label);
+
+        HorizontalScrollView cmdBox = createTerminalCodeBox(context, gen.getGeneratedCommand());
         inner.addView(cmdBox);
 
         TextView explanation = new TextView(context);
         explanation.setText(gen.getExplanation());
-        explanation.setTextSize(13);
-        explanation.setPadding(0, 12, 0, 12);
+        explanation.setTextSize(12);
+        explanation.setTextColor(0xFFE0E0E6);
+        explanation.setPadding(0, dpToPx(context, 10), 0, dpToPx(context, 8));
         inner.addView(explanation);
 
         LinearLayout actions = createHorizontalActions(context, gen.getGeneratedCommand());
@@ -351,29 +444,42 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         container.addView(card);
     }
 
-    // --- TAB 3: DIAGNOSE ---
+    // =========================================================================
+    // TAB 3: DIAGNOSE
+    // =========================================================================
     private void renderDiagnoseTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
 
-        TextView label = createSectionHeader(context, "Terminal Error Analyzer & Remediation");
-        layout.addView(label);
+        layout.addView(createSectionHeader(context, "Terminal Error Analyzer & Remediation"));
+        layout.addView(createSectionSubtext(context, "Diagnose stderr messages, command failures, and automated recovery paths"));
 
         EditText input = createMonospaceInputField(context, "Paste terminal stderr or error message here...");
         layout.addView(input);
 
         // Auto capture button
-        MaterialButton btnCapture = new MaterialButton(context, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
-        btnCapture.setText("Capture Error from Active Terminal");
+        MaterialButton btnCapture = new MaterialButton(context);
+        btnCapture.setText("Capture Active Terminal Screen");
         btnCapture.setIconResource(R.drawable.ic_terminal);
+        btnCapture.setIconSize(dpToPx(context, 16));
+        btnCapture.setIconTint(ColorStateList.valueOf(0xFF80DEEA));
+        btnCapture.setTextColor(0xFF80DEEA);
+        btnCapture.setBackgroundTintList(ColorStateList.valueOf(0xFF1E2628));
+        btnCapture.setStrokeColor(ColorStateList.valueOf(0xFF2C3E42));
+        btnCapture.setStrokeWidth(dpToPx(context, 1));
+        btnCapture.setCornerRadius(dpToPx(context, 8));
+        btnCapture.setTextSize(12);
+        LinearLayout.LayoutParams capLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        capLp.topMargin = dpToPx(context, 8);
+        btnCapture.setLayoutParams(capLp);
         btnCapture.setOnClickListener(v -> {
             if (mCallback != null) {
                 String captured = mCallback.onCaptureTerminalOutput();
                 if (captured != null && !captured.trim().isEmpty()) {
                     input.setText(captured.trim());
-                    Toast.makeText(context, "Captured terminal output.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Captured active terminal output.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "No terminal output captured.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Terminal output is currently empty.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -382,7 +488,7 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         ProgressBar progress = createProgressBar(context);
         layout.addView(progress);
 
-        MaterialButton btnDiagnose = createPrimaryButton(context, "Diagnose Error", R.drawable.ic_diagnose);
+        MaterialButton btnDiagnose = createPrimaryButton(context, "Diagnose Error", R.drawable.ic_diagnose, 0xFF00ACC1);
         layout.addView(btnDiagnose);
 
         LinearLayout resultContainer = createBaseVerticalLayout(context);
@@ -419,43 +525,38 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
     private void displayDiagnosisResult(LinearLayout container, AIErrorDiagnosis diag) {
         Context context = requireContext();
         MaterialCardView card = createResultCard(context);
-        LinearLayout inner = createBaseVerticalLayout(context);
-        inner.setPadding(24, 24, 24, 24);
+        LinearLayout inner = createCardInnerLayout(context);
 
+        // Status pill
         TextView cat = new TextView(context);
-        cat.setText("Category: " + diag.getCategory().getDisplayName());
-        cat.setTextSize(12);
-        cat.setTypeface(null, android.graphics.Typeface.BOLD);
+        cat.setText("DETECTED: " + diag.getCategory().getDisplayName().toUpperCase());
+        cat.setTextSize(10);
+        cat.setTypeface(null, Typeface.BOLD);
         cat.setTextColor(0xFFFF9500);
+        cat.setBackground(createRoundedBackground(context, 0x22FF9500, 0x44FF9500, 6));
+        int padH = dpToPx(context, 8);
+        int padV = dpToPx(context, 3);
+        cat.setPadding(padH, padV, padH, padV);
         inner.addView(cat);
 
         TextView cause = new TextView(context);
         cause.setText("Root Cause: " + diag.getRootCause());
-        cause.setTextSize(13);
-        cause.setPadding(0, 8, 0, 8);
+        cause.setTextSize(12);
+        cause.setTypeface(null, Typeface.BOLD);
+        cause.setTextColor(0xFFF2F2F5);
+        cause.setPadding(0, dpToPx(context, 8), 0, dpToPx(context, 4));
         inner.addView(cause);
 
         TextView remedy = new TextView(context);
         remedy.setText("Remedy: " + diag.getRemedyExplanation());
-        remedy.setTextSize(13);
-        remedy.setPadding(0, 0, 0, 8);
+        remedy.setTextSize(12);
+        remedy.setTextColor(0xFFB0B0B8);
+        remedy.setPadding(0, 0, 0, dpToPx(context, 8));
         inner.addView(remedy);
 
         if (!diag.getSuggestedFixCommand().isEmpty()) {
-            TextView fixLabel = new TextView(context);
-            fixLabel.setText("Recommended Fix Command:");
-            fixLabel.setTextSize(12);
-            fixLabel.setTypeface(null, android.graphics.Typeface.BOLD);
-            inner.addView(fixLabel);
-
-            TextView fixCmd = new TextView(context);
-            fixCmd.setText(diag.getSuggestedFixCommand());
-            fixCmd.setTypeface(android.graphics.Typeface.MONOSPACE);
-            fixCmd.setTextSize(13);
-            fixCmd.setTextColor(0xFF34C759);
-            fixCmd.setBackgroundColor(0x1534C759);
-            fixCmd.setPadding(12, 12, 12, 12);
-            inner.addView(fixCmd);
+            HorizontalScrollView fixScroll = createTerminalCodeBox(context, diag.getSuggestedFixCommand());
+            inner.addView(fixScroll);
 
             LinearLayout actions = createHorizontalActions(context, diag.getSuggestedFixCommand());
             inner.addView(actions);
@@ -465,14 +566,16 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         container.addView(card);
     }
 
-    // --- TAB 4: HISTORY ---
+    // =========================================================================
+    // TAB 4: HISTORY
+    // =========================================================================
     private void renderHistoryTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
 
         LinearLayout headerRow = new LinearLayout(context);
         headerRow.setOrientation(LinearLayout.HORIZONTAL);
-        headerRow.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        headerRow.setGravity(Gravity.CENTER_VERTICAL);
 
         TextView label = createSectionHeader(context, "Command Intelligence History");
         label.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
@@ -480,7 +583,8 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
 
         MaterialButton btnClear = new MaterialButton(context, null, com.google.android.material.R.attr.borderlessButtonStyle);
         btnClear.setText("Clear");
-        btnClear.setTextSize(12);
+        btnClear.setTextSize(11);
+        btnClear.setTextColor(0xFF8E8E93);
         btnClear.setOnClickListener(v -> {
             mHistoryManager.clearHistory();
             renderHistoryTab();
@@ -491,39 +595,39 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         List<AIHistoryItem> history = mHistoryManager.getHistory();
         if (history.isEmpty()) {
             TextView empty = new TextView(context);
-            empty.setText("No history items yet. Commands explained or generated will appear here.");
-            empty.setTextSize(13);
+            empty.setText("No history items yet. Commands analyzed or generated will appear here.");
+            empty.setTextSize(12);
             empty.setTextColor(0xFF8E8E93);
-            empty.setPadding(0, 24, 0, 24);
-            empty.setGravity(android.view.Gravity.CENTER);
+            empty.setPadding(0, dpToPx(context, 24), 0, dpToPx(context, 24));
+            empty.setGravity(Gravity.CENTER);
             layout.addView(empty);
         } else {
             for (AIHistoryItem item : history) {
                 MaterialCardView itemCard = createResultCard(context);
-                LinearLayout inner = createBaseVerticalLayout(context);
-                inner.setPadding(16, 16, 16, 16);
+                LinearLayout inner = createCardInnerLayout(context);
 
                 TextView typeBadge = new TextView(context);
                 typeBadge.setText(item.getType().getLabel().toUpperCase());
                 typeBadge.setTextColor(item.getType().getColor());
-                typeBadge.setTextSize(10);
-                typeBadge.setTypeface(null, android.graphics.Typeface.BOLD);
+                typeBadge.setTextSize(9);
+                typeBadge.setTypeface(null, Typeface.BOLD);
+                typeBadge.setBackground(createRoundedBackground(context, (item.getType().getColor() & 0x00FFFFFF) | 0x20000000, 0, 4));
+                int padH = dpToPx(context, 6);
+                int padV = dpToPx(context, 2);
+                typeBadge.setPadding(padH, padV, padH, padV);
                 inner.addView(typeBadge);
 
                 TextView query = new TextView(context);
                 query.setText(item.getQuery());
-                query.setTextSize(13);
-                query.setTypeface(null, android.graphics.Typeface.BOLD);
-                query.setPadding(0, 4, 0, 4);
+                query.setTextSize(12);
+                query.setTypeface(null, Typeface.BOLD);
+                query.setTextColor(0xFFF2F2F5);
+                query.setPadding(0, dpToPx(context, 4), 0, dpToPx(context, 4));
                 inner.addView(query);
 
                 if (!item.getResultCommand().isEmpty()) {
-                    TextView res = new TextView(context);
-                    res.setText(item.getResultCommand());
-                    res.setTypeface(android.graphics.Typeface.MONOSPACE);
-                    res.setTextSize(12);
-                    res.setTextColor(0xFF007AFF);
-                    inner.addView(res);
+                    HorizontalScrollView cmdBox = createTerminalCodeBox(context, item.getResultCommand());
+                    inner.addView(cmdBox);
 
                     LinearLayout actions = createHorizontalActions(context, item.getResultCommand());
                     inner.addView(actions);
@@ -537,51 +641,74 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         mTabContainer.addView(layout);
     }
 
-    // --- TAB 5: GITHUB WORKSPACE ---
+    // =========================================================================
+    // TAB 5: GITHUB WORKSPACE
+    // =========================================================================
     private void renderGitHubTab() {
         Context context = requireContext();
         LinearLayout layout = createBaseVerticalLayout(context);
 
-        TextView label = createSectionHeader(context, "GitHub Workspace Dashboard");
-        layout.addView(label);
+        layout.addView(createSectionHeader(context, "GitHub Workspace Tools"));
+        layout.addView(createSectionSubtext(context, "Clone repositories and launch cloud environments"));
 
-        // Curated Repositories
         List<GitHubRepoItem> repos = mGitHubManager.getPopularRepositories();
         for (GitHubRepoItem repo : repos) {
             MaterialCardView card = createResultCard(context);
-            LinearLayout inner = createBaseVerticalLayout(context);
-            inner.setPadding(20, 20, 20, 20);
+            LinearLayout inner = createCardInnerLayout(context);
+
+            LinearLayout titleRow = new LinearLayout(context);
+            titleRow.setOrientation(LinearLayout.HORIZONTAL);
+            titleRow.setGravity(Gravity.CENTER_VERTICAL);
+
+            ImageView repoIcon = new ImageView(context);
+            repoIcon.setImageResource(R.drawable.ic_github);
+            repoIcon.setColorFilter(0xFFFFFFFF);
+            int iconSize = dpToPx(context, 16);
+            titleRow.addView(repoIcon, new LinearLayout.LayoutParams(iconSize, iconSize));
 
             TextView repoName = new TextView(context);
-            repoName.setText("📦 " + repo.getFullName());
-            repoName.setTextSize(15);
-            repoName.setTypeface(null, android.graphics.Typeface.BOLD);
-            inner.addView(repoName);
+            repoName.setText(repo.getFullName());
+            repoName.setTextSize(13);
+            repoName.setTypeface(null, Typeface.BOLD);
+            repoName.setTextColor(0xFFF2F2F5);
+            repoName.setPadding(dpToPx(context, 8), 0, 0, 0);
+            titleRow.addView(repoName);
+            inner.addView(titleRow);
 
             TextView desc = new TextView(context);
             desc.setText(repo.getDescription());
-            desc.setTextSize(12);
-            desc.setPadding(0, 4, 0, 8);
+            desc.setTextSize(11);
+            desc.setTextColor(0xFF8E8E93);
+            desc.setPadding(0, dpToPx(context, 4), 0, dpToPx(context, 8));
             inner.addView(desc);
 
             LinearLayout actionRow = new LinearLayout(context);
             actionRow.setOrientation(LinearLayout.HORIZONTAL);
-            actionRow.setGravity(android.view.Gravity.END);
+            actionRow.setGravity(Gravity.END);
 
-            MaterialButton btnCodespace = new MaterialButton(context, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            MaterialButton btnCodespace = new MaterialButton(context);
             btnCodespace.setText("Codespace");
             btnCodespace.setTextSize(11);
+            btnCodespace.setBackgroundTintList(ColorStateList.valueOf(0xFF202028));
+            btnCodespace.setStrokeColor(ColorStateList.valueOf(0xFF33333E));
+            btnCodespace.setStrokeWidth(dpToPx(context, 1));
+            btnCodespace.setCornerRadius(dpToPx(context, 6));
+            btnCodespace.setTextColor(0xFFB0BEC5);
             btnCodespace.setOnClickListener(v -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mGitHubManager.generateCodespaceLaunchUrl(repo.getFullName())));
                 startActivity(browserIntent);
             });
             actionRow.addView(btnCodespace);
 
-            MaterialButton btnClone = new MaterialButton(context, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            MaterialButton btnClone = new MaterialButton(context);
             btnClone.setText("Clone in Termux");
             btnClone.setTextSize(11);
-            btnClone.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            ((LinearLayout.LayoutParams) btnClone.getLayoutParams()).setMarginStart(16);
+            btnClone.setBackgroundTintList(ColorStateList.valueOf(0xFFFF3B30));
+            btnClone.setCornerRadius(dpToPx(context, 6));
+            btnClone.setTextColor(0xFFFFFFFF);
+            LinearLayout.LayoutParams lpClone = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lpClone.setMarginStart(dpToPx(context, 8));
+            btnClone.setLayoutParams(lpClone);
             btnClone.setOnClickListener(v -> {
                 String cloneCmd = mGitHubManager.generateCloneCommand(repo.getCloneUrl());
                 if (mCallback != null) {
@@ -599,7 +726,9 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         mTabContainer.addView(layout);
     }
 
-    // --- UI Helper Methods ---
+    // =========================================================================
+    // UI BUILDER HELPERS
+    // =========================================================================
     private LinearLayout createBaseVerticalLayout(Context context) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -611,23 +740,37 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         TextView tv = new TextView(context);
         tv.setText(title);
         tv.setTextSize(14);
-        tv.setTypeface(null, android.graphics.Typeface.BOLD);
-        tv.setPadding(0, 0, 0, 12);
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextColor(0xFFF2F2F5);
+        tv.setPadding(0, dpToPx(context, 2), 0, dpToPx(context, 2));
+        return tv;
+    }
+
+    private TextView createSectionSubtext(Context context, String subtext) {
+        TextView tv = new TextView(context);
+        tv.setText(subtext);
+        tv.setTextSize(11);
+        tv.setTextColor(0xFF8E8E93);
+        tv.setPadding(0, 0, 0, dpToPx(context, 10));
         return tv;
     }
 
     private EditText createInputField(Context context, String hint) {
         EditText et = new EditText(context);
         et.setHint(hint);
-        et.setTextSize(14);
-        et.setBackgroundResource(R.drawable.session_background_selected);
-        et.setPadding(20, 20, 20, 20);
+        et.setHintTextColor(0xFF70707A);
+        et.setTextSize(13);
+        et.setTextColor(0xFFF2F2F5);
+        et.setBackground(createRoundedBackground(context, 0xFF121216, 0xFF2A2A34, 10));
+        int padH = dpToPx(context, 14);
+        int padV = dpToPx(context, 12);
+        et.setPadding(padH, padV, padH, padV);
         return et;
     }
 
     private EditText createMonospaceInputField(Context context, String hint) {
         EditText et = createInputField(context, hint);
-        et.setTypeface(android.graphics.Typeface.MONOSPACE);
+        et.setTypeface(Typeface.MONOSPACE);
         return et;
     }
 
@@ -635,44 +778,95 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         ProgressBar pb = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
         pb.setIndeterminate(true);
         pb.setVisibility(View.GONE);
-        pb.setPadding(0, 12, 0, 12);
+        pb.setPadding(0, dpToPx(context, 8), 0, dpToPx(context, 8));
         return pb;
     }
 
-    private MaterialButton createPrimaryButton(Context context, String text, int iconRes) {
+    private MaterialButton createPrimaryButton(Context context, String text, int iconRes, int bgTint) {
         MaterialButton btn = new MaterialButton(context);
         btn.setText(text);
         btn.setIconResource(iconRes);
-        btn.setIconSize(36);
+        btn.setIconSize(dpToPx(context, 16));
+        btn.setTextSize(12);
+        btn.setBackgroundTintList(ColorStateList.valueOf(bgTint));
+        btn.setCornerRadius(dpToPx(context, 8));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = 16;
+        lp.topMargin = dpToPx(context, 12);
         btn.setLayoutParams(lp);
         return btn;
     }
 
     private MaterialCardView createResultCard(Context context) {
         MaterialCardView card = new MaterialCardView(context);
-        card.setRadius(24);
+        card.setRadius(dpToPx(context, 14));
         card.setCardElevation(0);
-        card.setStrokeWidth(2);
-        card.setStrokeColor(0x338E8E93);
+        card.setStrokeWidth(dpToPx(context, 1));
+        card.setStrokeColor(0xFF2C2C34);
+        card.setCardBackgroundColor(0xFF1A1A20);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = 16;
+        lp.topMargin = dpToPx(context, 10);
         card.setLayoutParams(lp);
         return card;
+    }
+
+    private LinearLayout createCardInnerLayout(Context context) {
+        LinearLayout inner = new LinearLayout(context);
+        inner.setOrientation(LinearLayout.VERTICAL);
+        int pad = dpToPx(context, 14);
+        inner.setPadding(pad, pad, pad, pad);
+        return inner;
+    }
+
+    private HorizontalScrollView createTerminalCodeBox(Context context, String command) {
+        HorizontalScrollView scroll = new HorizontalScrollView(context);
+        scroll.setHorizontalScrollBarEnabled(false);
+        scroll.setBackground(createRoundedBackground(context, 0xFF0A0A0D, 0xFF24242A, 8));
+        LinearLayout.LayoutParams scrollLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        scrollLp.topMargin = dpToPx(context, 8);
+        scroll.setLayoutParams(scrollLp);
+
+        LinearLayout cmdLayout = new LinearLayout(context);
+        cmdLayout.setOrientation(LinearLayout.HORIZONTAL);
+        cmdLayout.setGravity(Gravity.CENTER_VERTICAL);
+        int padH = dpToPx(context, 12);
+        int padV = dpToPx(context, 8);
+        cmdLayout.setPadding(padH, padV, padH, padV);
+
+        TextView prompt = new TextView(context);
+        prompt.setText("$ ");
+        prompt.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        prompt.setTextColor(0xFFFF3B30);
+        prompt.setTextSize(12);
+        cmdLayout.addView(prompt);
+
+        TextView cmdView = new TextView(context);
+        cmdView.setText(command);
+        cmdView.setTypeface(Typeface.MONOSPACE);
+        cmdView.setTextSize(12);
+        cmdView.setTextColor(0xFFECECEF);
+        cmdLayout.addView(cmdView);
+
+        scroll.addView(cmdLayout);
+        return scroll;
     }
 
     private LinearLayout createHorizontalActions(Context context, String command) {
         LinearLayout row = new LinearLayout(context);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(android.view.Gravity.END);
-        row.setPadding(0, 8, 0, 0);
+        row.setGravity(Gravity.END);
+        row.setPadding(0, dpToPx(context, 10), 0, 0);
 
-        MaterialButton btnCopy = new MaterialButton(context, null, com.google.android.material.R.attr.borderlessButtonStyle);
+        MaterialButton btnCopy = new MaterialButton(context);
         btnCopy.setText("Copy");
         btnCopy.setIconResource(R.drawable.ic_copy);
-        btnCopy.setIconSize(32);
-        btnCopy.setTextSize(12);
+        btnCopy.setIconSize(dpToPx(context, 13));
+        btnCopy.setIconTint(ColorStateList.valueOf(0xFFB0BEC5));
+        btnCopy.setTextSize(11);
+        btnCopy.setTextColor(0xFFB0BEC5);
+        btnCopy.setBackgroundTintList(ColorStateList.valueOf(0xFF202028));
+        btnCopy.setStrokeColor(ColorStateList.valueOf(0xFF32323C));
+        btnCopy.setStrokeWidth(dpToPx(context, 1));
+        btnCopy.setCornerRadius(dpToPx(context, 6));
         btnCopy.setOnClickListener(v -> {
             ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             if (cm != null) {
@@ -682,13 +876,20 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         });
         row.addView(btnCopy);
 
-        MaterialButton btnInsert = new MaterialButton(context, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        MaterialButton btnInsert = new MaterialButton(context);
         btnInsert.setText("Insert");
         btnInsert.setIconResource(R.drawable.ic_insert);
-        btnInsert.setIconSize(32);
-        btnInsert.setTextSize(12);
-        btnInsert.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ((LinearLayout.LayoutParams) btnInsert.getLayoutParams()).setMarginStart(12);
+        btnInsert.setIconSize(dpToPx(context, 13));
+        btnInsert.setIconTint(ColorStateList.valueOf(0xFFB0BEC5));
+        btnInsert.setTextSize(11);
+        btnInsert.setTextColor(0xFFB0BEC5);
+        btnInsert.setBackgroundTintList(ColorStateList.valueOf(0xFF202028));
+        btnInsert.setStrokeColor(ColorStateList.valueOf(0xFF32323C));
+        btnInsert.setStrokeWidth(dpToPx(context, 1));
+        btnInsert.setCornerRadius(dpToPx(context, 6));
+        LinearLayout.LayoutParams lpInsert = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lpInsert.setMarginStart(dpToPx(context, 6));
+        btnInsert.setLayoutParams(lpInsert);
         btnInsert.setOnClickListener(v -> {
             if (mCallback != null) {
                 mCallback.onInsertCommand(command);
@@ -700,10 +901,15 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         MaterialButton btnRun = new MaterialButton(context);
         btnRun.setText("Run");
         btnRun.setIconResource(R.drawable.ic_play);
-        btnRun.setIconSize(32);
-        btnRun.setTextSize(12);
-        btnRun.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ((LinearLayout.LayoutParams) btnRun.getLayoutParams()).setMarginStart(12);
+        btnRun.setIconSize(dpToPx(context, 13));
+        btnRun.setIconTint(ColorStateList.valueOf(0xFFFFFFFF));
+        btnRun.setTextSize(11);
+        btnRun.setTextColor(0xFFFFFFFF);
+        btnRun.setBackgroundTintList(ColorStateList.valueOf(0xFFFF3B30));
+        btnRun.setCornerRadius(dpToPx(context, 6));
+        LinearLayout.LayoutParams lpRun = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lpRun.setMarginStart(dpToPx(context, 6));
+        btnRun.setLayoutParams(lpRun);
         btnRun.setOnClickListener(v -> {
             if (mCallback != null) {
                 mCallback.onExecuteCommand(command);
@@ -713,5 +919,20 @@ public class AIWorkspaceBottomSheet extends BottomSheetDialogFragment {
         row.addView(btnRun);
 
         return row;
+    }
+
+    private static GradientDrawable createRoundedBackground(Context context, int fillColor, int strokeColor, int radiusDp) {
+        GradientDrawable gd = new GradientDrawable();
+        gd.setShape(GradientDrawable.RECTANGLE);
+        gd.setCornerRadius(dpToPx(context, radiusDp));
+        gd.setColor(fillColor);
+        if (strokeColor != 0) {
+            gd.setStroke(dpToPx(context, 1), strokeColor);
+        }
+        return gd;
+    }
+
+    private static int dpToPx(Context context, int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 }

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/command_palette_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/madmax_surface_dark"
+    android:paddingBottom="16dp">
+
+    <!-- Drag Handle -->
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tint="#4A4A52" />
+
+    <!-- Search Input Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_palette_search_box"
+            android:paddingHorizontal="12dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_explain"
+                app:tint="#8E8E93"
+                android:contentDescription="Search" />
+
+            <EditText
+                android:id="@+id/palette_search_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Type a command, action, or snippet..."
+                android:textColorHint="#707078"
+                android:textColor="#F2F2F5"
+                android:textSize="13sp"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:importantForAutofill="no" />
+
+            <ImageButton
+                android:id="@+id/btn_palette_clear_query"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="#8E8E93"
+                android:visibility="gone"
+                android:contentDescription="Clear Search" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_close_palette"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="#8E8E93"
+            android:contentDescription="Close" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#222228" />
+
+    <!-- Results List -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="340dp">
+
+        <ListView
+            android:id="@+id/palette_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:paddingVertical="6dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <!-- Empty State -->
+        <TextView
+            android:id="@+id/palette_empty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No matching actions found"
+            android:textSize="13sp"
+            android:textColor="#707078"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>
