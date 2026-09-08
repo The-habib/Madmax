@@ -1,99 +1,77 @@
 # MadMax Engineering Roadmap
 
-This roadmap defines the prioritized evolutionary milestones for MadMax. Every feature is designed to be implemented modularly on top of the untouched Termux core engine.
+> **Status:** Milestones 1.0, 1.1, and 1.2 are **100% COMPLETE & VERIFIED**.
 
 ---
 
-## 🎯 Strategic Milestones Overview
+## 🎯 Milestones Trajectory
 
 ```
-Phase 1: Modern Foundations (Q3 2026)
-  ├── Material 3 Theming Engine & Dynamic Colors
-  ├── Advanced Visual Session Manager
-  └── Modernized Preference & Settings Architecture
+Milestone 1.0: Engineering Foundation (Completed 2026-08)
+  ├── Toolchain standardization, Gradle 9.2.1, API 36, NDK 29
+  ├── .madmax/ rules, blueprints, architecture specs
+  └── Protected core boundaries established
 
-Phase 2: Developer Ecosystem & Cloud Integration (Q4 2026)
-  ├── AI Assistant Integration (Local / API LLM CLI Hook)
-  ├── Deep GitHub CLI & Repository Workspace Sync
-  └── GitHub Codespaces & Remote SSH Container Launcher
+Milestone 1.1: Extension Layer & Material 3 (Completed 2026-08)
+  ├── Decoupled Extension Manager & Dynamic Feature Registry
+  ├── Material 3 DayNight Theming & Monet Dynamic Colors
+  ├── Redesigned Session Drawer with rounded cards
+  ├── Modernized Settings Hub
+  └── Hidden Developer Diagnostics Dashboard (5-tap trigger)
 
-Phase 3: Extensibility & Performance (Q1 2027)
-  ├── High-Performance Plugin Architecture
-  ├── Real-time Developer Dashboard
-  └── Low-Overhead Terminal Performance Monitor
+Milestone 1.2: AI Workspace & Command Intelligence (Completed 2026-08)
+  ├── Material 3 AI Workspace Bottom Sheet (Explain, Generate, Diagnose, History, GitHub)
+  ├── 100% Offline Command Intelligence Engine (100+ commands with flag parsing)
+  ├── Regex Error Analyzer (automated stderr classification & fixes)
+  └── Multi-ABI Debug APK Release pipeline (v1.2.0-dev)
+
+Milestone 1.3: Stabilization & Upstream Synchronization (Current Target)
+  ├── Clean cherry-pick of upstream security fix (commit 3b66f87 in RunCommandService)
+  ├── GitHub default branch alignment (merge dev to master)
+  ├── Re-tagging v1.2.0-dev to dev tip
+  └── Additional unit tests for edge-case shell commands
+
+Milestone 2.0: Cloud Ecosystem & Advanced Plugins (Future)
+  ├── Remote LLM Provider Connectors (Ollama local network, Gemini, OpenAI)
+  ├── Deep GitHub Workspace Sync (PR reviews, issue browser via gh CLI)
+  └── Modular Socket Plugin Architecture
 ```
 
 ---
 
-## Phase 1: Modern Foundations
+## Completed Milestones
 
-### 1. Material 3 Theming & Dynamic Colors
-* **Description:** Implement Material You / Material Design 3 components across all navigation drawers, dialogs, settings fragments, and toolbar elements. Support dynamic wallpaper color extraction (Android 12+ Monet engine).
-* **Affected Files:** `app/src/main/res/values/themes.xml`, `app/src/main/res/values-night/themes.xml`, `app/src/main/res/layout/activity_termux.xml`, `termux-shared/.../theme/TermuxThemeUtils.java`.
-* **Risk Level:** 🟢 Low (Pure UI resource and view styling).
-* **Implementation Strategy:** Update theme inheritance to `Theme.Material3.DayNight.NoActionBar` while ensuring fallback backward compatibility for Android 5.0 - 11.
-* **Merge Safety:** High.
+### Milestone 1.0: Engineering Foundation
+* Architecture blueprints, coding standards, Conventional Commits policy.
+* Verification of protected core files (`terminal-emulator/`, `termux.c`, `local-socket.cpp`, `targetSdkVersion=28`).
 
-### 2. Advanced Visual Session Manager
-* **Description:** Overhaul the session drawer with live process previews, execution status badges (running, idle, exited with code), custom session naming, session color tagging, and drag-and-drop reordering.
-* **Affected Files:** `app/.../terminal/TermuxSessionsListViewController.java`, `app/src/main/res/layout/item_terminal_sessions_list.xml`, `app/src/main/res/layout/activity_termux.xml`.
-* **Risk Level:** 🟡 Moderate (Interacts with `TermuxService` session lists).
-* **Implementation Strategy:** Extend session metadata wrappers without mutating `TerminalSession.java`.
-* **Merge Safety:** High.
+### Milestone 1.1: Extension Layer & Material 3
+* `com.termux.app.madmax.core.MadMaxExtensionManager`
+* `com.termux.app.madmax.features.MadMaxFeatureRegistry`
+* `com.termux.app.madmax.ui.theme.MadMaxThemeManager`
+* `com.termux.app.madmax.dev.DeveloperDashboardActivity` & `SystemMetricsCollector`
+* Settings fragments for Appearance, AI, Developer, GitHub, Plugins.
 
-### 3. Modernized Settings Architecture
-* **Description:** Transform the legacy flat preferences into a structured, searchable, modern Material 3 preferences hub with real-time live preview of cursor styles, extra-keys layouts, and colors.
-* **Affected Files:** `app/.../activities/SettingsActivity.java`, `app/.../fragments/settings/`, `termux-shared/.../settings/`.
-* **Risk Level:** 🟢 Low.
-* **Implementation Strategy:** Refactor `PreferenceFragmentCompat` classes into modular categories (Appearance, Terminal, Keys, Cloud, AI, Security).
-* **Merge Safety:** High.
+### Milestone 1.2: AI Workspace & Command Intelligence
+* `com.termux.app.madmax.ai.engine.OfflineCommandIntelligence` (100+ commands)
+* `com.termux.app.madmax.ai.engine.AIErrorAnalyzer` (regex pattern classification)
+* `com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet`
+* Comprehensive test suites: `AIErrorAnalyzerTest`, `OfflineCommandIntelligenceTest`.
+* CI automation and release APK packaging.
 
 ---
 
-## Phase 2: Developer Ecosystem & Cloud Integration
+## Active & Upcoming Milestones
 
-### 1. In-Terminal AI Assistant
-* **Description:** Add an optional non-intrusive assistant sidebar / bottom sheet capable of explaining terminal errors, generating shell commands with safety checks, and auto-completing complex CLI invocations.
-* **Affected Files:** `app/.../terminal/`, `app/src/main/res/layout/`.
-* **Risk Level:** 🟢 Low.
-* **Implementation Strategy:** Operates as a distinct UI overlay that passes selected text or error streams to local/remote LLM endpoints and optionally injects approved commands into the active `TerminalSession` input stream.
-* **Merge Safety:** High.
+### Milestone 1.3: Baseline Alignment & Upstream Security
+1. **Upstream Security Fix Cherry-pick:**  
+   Incorporate `3b66f87` (`RunCommandService` file result config security fix) from `upstream/master`.
+2. **Repository Default Branch Alignment:**  
+   Reconcile `master` with `dev` on GitHub so new clones immediately receive the full MadMax codebase.
+3. **Release Tag Rectification:**  
+   Ensure tag `v1.2.0-dev` accurately references the tip of `dev`.
 
-### 2. Deep GitHub Integration
-* **Description:** Direct integration with GitHub CLI (`gh`), repository cloning wizards, issue tracking, and PR review helpers in a dedicated workspace panel.
-* **Affected Files:** New modular subpackage `app/.../github/`.
-* **Risk Level:** 🟢 Low.
-* **Implementation Strategy:** Interacts via background `AppShell` running `gh` commands and renders results in a native UI drawer.
-* **Merge Safety:** High.
-
-### 3. Codespaces & Remote SSH Container Launcher
-* **Description:** One-click launch and connection to GitHub Codespaces and remote SSH server instances with saved port forwarding and key management.
-* **Affected Files:** New modular subpackage `app/.../cloud/`.
-* **Risk Level:** 🟢 Low.
-* **Implementation Strategy:** Generates SSH session configurations and starts `TerminalSession` running `ssh` or GitHub Codespaces CLI.
-* **Merge Safety:** High.
-
----
-
-## Phase 3: Extensibility & Performance
-
-### 1. Modular Plugin Architecture
-* **Description:** Modernize the IPC mechanism for plugin modules with reactive Binder services and bidirectional event streaming.
-* **Affected Files:** `termux-shared/.../plugins/`, `termux-shared/.../shell/`.
-* **Risk Level:** 🟡 Moderate.
-* **Implementation Strategy:** Build reactive wrapper APIs around existing `RUN_COMMAND` intent protocols.
-* **Merge Safety:** High.
-
-### 2. Real-time Developer Dashboard
-* **Description:** Overlay dashboard displaying system metrics: CPU, RAM, active PTY threads, network traffic, battery drain rate, and storage utilization.
-* **Affected Files:** `app/.../terminal/`, `termux-shared/.../models/`.
-* **Risk Level:** 🟢 Low.
-* **Implementation Strategy:** Native background reader polling `/proc/stat`, `/proc/net/dev`, and Android battery APIs.
-* **Merge Safety:** High.
-
-### 3. Low-Overhead Terminal Performance Monitor
-* **Description:** Frame timing, character render throughput benchmarks, and scrollback memory allocation tracker for power users and terminal benchmarkers.
-* **Affected Files:** `terminal-view/.../TerminalRenderer.java`.
-* **Risk Level:** 🟡 Moderate (Needs careful profiling to avoid adding overhead to render loops).
-* **Implementation Strategy:** Optional debug overlay tracking draw intervals and frame drops.
-* **Merge Safety:** High.
+### Milestone 2.0: Cloud & Remote Integrations
+1. **External LLM Providers:** Network-backed providers using optional user API keys or local Ollama instances.
+2. **GitHub Workspace:** Live PR review panel and Codespaces connector.
+3. **Advanced Session Metrics:** Per-session CPU/memory usage indicators in the drawer.

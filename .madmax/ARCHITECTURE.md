@@ -7,25 +7,41 @@
 ## 1. System Components Topology
 
 ```
-┌───────────────────────────────────────────────────────────────────────────┐
-│                                 ANDROID UI                                │
-│  TermuxActivity ──────► TerminalView ──────► TerminalRenderer (Canvas 2D) │
-│  Navigation Drawer ───► ExtraKeysView ─────► Material 3 Preferences Hub   │
-└─────────────────────────────────────▲─────────────────────────────────────┘
-                                      │ Local Binder IPC
-┌─────────────────────────────────────▼─────────────────────────────────────┐
-│                            SERVICE PROCESS HOST                           │
-│  TermuxService (Foreground Service, Wakelocks, Notification, Sessions)    │
-│  - Shell Manager (List<TermuxSession>, List<AppShell>)                    │
-│  - IPC Dispatcher (RunCommandService, TermuxAmSocketServer)               │
-└─────────────────────────────────────▲─────────────────────────────────────┘
-                                      │ Native JNI Calls
-┌─────────────────────────────────────▼─────────────────────────────────────┐
-│                          HEADLESS ENGINE & PTY                            │
-│  TerminalEmulator (DEC/VT100 State Machine, ANSI Parser, Dual Buffers)   │
-│  termux.c (Linux openpty, fork, execvp, dup2, setsid, TIOCSWINSZ)         │
-│  Sysroot: /data/data/com.termux/files/usr ($PREFIX)                       │
-└───────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                           MADMAX EXTENSION & UI LAYER                             │
+│                                                                                   │
+│   ┌────────────────────────┐  ┌───────────────────────┐  ┌────────────────────┐   │
+│   │  AI Workspace Bottom   │  │  Developer Dashboard  │  │ Material 3 Settings│   │
+│   │  Sheet (Explain, Gen,  │  │  Activity (Hardware,  │  │ Hub (Fragments,    │   │
+│   │  Diagnose, Git, Hist)  │  │  SDK, Live Metrics)   │  │ Feature Flags)     │   │
+│   └───────────┬────────────┘  └───────────┬───────────┘  └─────────┬──────────┘   │
+│               │                           │                        │              │
+│   ┌───────────▼───────────────────────────▼────────────────────────▼──────────┐   │
+│   │                  MadMax Extension Manager & Feature Registry              │   │
+│   │                  - Monet Dynamic Colors (MadMaxThemeManager)              │   │
+│   │                  - Offline Command Intelligence & Error Analyzer          │   │
+│   └───────────────────────────────────────┬───────────────────────────────────┘   │
+└───────────────────────────────────────────┼───────────────────────────────────────┘
+                                            │ Non-Invasive UI Hooks
+┌───────────────────────────────────────────▼───────────────────────────────────────┐
+│                             TERMUX PRESENTATION & UI                              │
+│   TermuxActivity ───────► TerminalView ───────► TerminalRenderer (Canvas 2D)      │
+│   Session Drawer ───────► ExtraKeysView ──────► Material 3 Sessions List Card     │
+└───────────────────────────────────────────▲───────────────────────────────────────┘
+                                            │ Local Binder IPC
+┌───────────────────────────────────────────▼───────────────────────────────────────┐
+│                              SERVICE PROCESS HOST                                 │
+│   TermuxService (Foreground Service, Wakelocks, Notification, Sessions)           │
+│   - Shell Manager (List<TermuxSession>, List<AppShell>)                           │
+│   - IPC Dispatcher (RunCommandService, TermuxAmSocketServer)                      │
+└───────────────────────────────────────────▲───────────────────────────────────────┘
+                                            │ Native JNI Calls
+┌───────────────────────────────────────────▼───────────────────────────────────────┐
+│                         HEADLESS ENGINE & PTY (PROTECTED)                         │
+│   TerminalEmulator (DEC/VT100 State Machine, ANSI Parser, Dual Buffers)          │
+│   termux.c (Linux openpty, fork, execvp, dup2, setsid, TIOCSWINSZ)                │
+│   Sysroot: /data/data/com.termux/files/usr ($PREFIX)                              │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -34,29 +50,22 @@
 
 | Layer | Path | Core Responsibilities |
 |---|---|---|
-| **App Shell** | [`app/`](file:///workspaces/Madmax/app/) | Top-level Android manifest, activities, foreground service, bootstrap extraction, and SAF document providers. |
-| **Shared Foundation** | [`termux-shared/`](file:///workspaces/Madmax/termux-shared/) | Path constants, settings engines (`SharedProperties`), shell models (`ExecutionCommand`), and crash diagnostics (`ReportActivity`). |
-| **Canvas Renderer** | [`terminal-view/`](file:///workspaces/Madmax/terminal-view/) | Custom Android `View` surface, font rendering (`TerminalRenderer`), touch gestures, and selection handles. |
-| **Terminal Engine** | [`terminal-emulator/`](file:///workspaces/Madmax/terminal-emulator/) | Pure headless VT100/ANSI parser, circular memory buffers (`TerminalBuffer`), and native Linux PTY controller (`termux.c`). **PROTECTED: DO NOT MODIFY.** |
+| **MadMax Core** | [`app/.../madmax/core/`](file:///home/runner/workspace/app/src/main/java/com/termux/app/madmax/core/) | Extension coordinator (`MadMaxExtensionManager`) and system constants. |
+| **Feature Registry** | [`app/.../madmax/features/`](file:///home/runner/workspace/app/src/main/java/com/termux/app/madmax/features/) | Dynamic, thread-safe feature flags (`MadMaxFeature`, `MadMaxFeatureRegistry`). |
+| **AI Intelligence** | [`app/.../madmax/ai/`](file:///home/runner/workspace/app/src/main/java/com/termux/app/madmax/ai/) | Offline command intelligence, regex error diagnosis, history, and workspace UI. |
+| **Developer Tools** | [`app/.../madmax/dev/`](file:///home/runner/workspace/app/src/main/java/com/termux/app/madmax/dev/) | Diagnostics activity and hardware metric collectors. |
+| **Settings Fragments** | [`app/.../madmax/settings/`](file:///home/runner/workspace/app/src/main/java/com/termux/app/madmax/settings/) | Modular preference screens (Appearance, AI, Dev, GitHub, Plugins). |
+| **App Shell** | [`app/`](file:///home/runner/workspace/app/) | Top-level Android manifest, activities, foreground service, bootstrap extraction. |
+| **Shared Foundation** | [`termux-shared/`](file:///home/runner/workspace/termux-shared/) | Path constants, settings engines (`SharedProperties`), shell models (`ExecutionCommand`). |
+| **Canvas Renderer** | [`terminal-view/`](file:///home/runner/workspace/terminal-view/) | Custom Android `View` surface, font rendering (`TerminalRenderer`), touch gestures. |
+| **Terminal Engine** | [`terminal-emulator/`](file:///home/runner/workspace/terminal-emulator/) | Headless VT100/ANSI parser, circular buffers, and native Linux PTY (`termux.c`). **PROTECTED: DO NOT MODIFY.** |
 
 ---
 
-## 3. Data Flow Architecture
+## 3. Extension Decoupling Architecture
 
-### 3.1 Keystroke Flow (User $\rightarrow$ Shell)
-1. User touches soft keyboard or on-screen `ExtraKeysView`.
-2. `TerminalView` receives key event / IME commit.
-3. `KeyHandler` translates keycode + modifiers to ANSI escape bytes.
-4. `TerminalSession.write()` writes bytes directly into native PTY `master_fd`.
-5. Linux kernel transfers bytes across PTY slave to the child process stdin.
-
-### 3.2 Output Flow (Process $\rightarrow$ Screen)
-1. Child process (e.g. `bash`) writes stdout/stderr to PTY slave.
-2. Linux kernel makes data available on PTY `master_fd`.
-3. `TerminalSession` reader thread reads bytes into `ByteQueue`.
-4. `TerminalEmulator.append()` parses escape sequences and updates `TerminalBuffer`.
-5. `TerminalView.invalidate()` triggers `TerminalRenderer.onDraw()` to redraw character glyphs on the Android Canvas.
-
----
-
-*For detailed data structures and low-level code mechanics, see [**`MADMAX_ENGINEERING_BLUEPRINT.md`**](file:///workspaces/Madmax/MADMAX_ENGINEERING_BLUEPRINT.md).*
+All MadMax capabilities follow strict decoupling rules:
+1. **Additive Subpackages:** All new business logic resides under `com.termux.app.madmax.*`.
+2. **Minimal Touchpoints:** Core Termux classes (`TermuxActivity`, `TermuxApplication`) only interact with extensions via single-line initializers or standard Android event callbacks.
+3. **Safe Interactivity with Terminal:** The AI Workspace inserts text or executes commands solely through standard public session interfaces (`session.write(command)`), capturing transcripts via `session.getEmulator().getScreen().getTranscriptText()`.
+4. **Offline by Default:** The intelligence engine operates 100% locally with zero required network calls or mandatory external API dependencies.
