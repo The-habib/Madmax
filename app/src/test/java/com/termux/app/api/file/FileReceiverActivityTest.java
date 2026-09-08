@@ -4,13 +4,10 @@ import com.termux.app.api.file.FileReceiverActivity;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
 public class FileReceiverActivityTest {
 
     @Test

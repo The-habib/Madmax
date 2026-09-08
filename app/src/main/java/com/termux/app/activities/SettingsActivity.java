@@ -68,9 +68,20 @@ public class SettingsActivity extends AppCompatActivity {
                     configureTermuxTaskerPreference(context);
                     configureTermuxWidgetPreference(context);
                     configureAboutPreference(context);
+                    configureMadMaxRepoPreference(context);
                     configureDonatePreference(context);
                 }
             }.start();
+        }
+
+        private void configureMadMaxRepoPreference(@NonNull Context context) {
+            Preference repoPreference = findPreference("madmax_repo");
+            if (repoPreference != null) {
+                repoPreference.setOnPreferenceClickListener(preference -> {
+                    ShareUtils.openUrl(context, "https://github.com/The-habib/Madmax");
+                    return true;
+                });
+            }
         }
 
         private void configureTermuxAPIPreference(@NonNull Context context) {

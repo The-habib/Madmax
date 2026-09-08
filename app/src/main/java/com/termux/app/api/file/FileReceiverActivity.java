@@ -57,7 +57,13 @@ public class FileReceiverActivity extends AppCompatActivity {
     static boolean isSharedTextAnUrl(String sharedText) {
         if (sharedText == null || sharedText.isEmpty()) return false;
 
-        return Patterns.WEB_URL.matcher(sharedText).matches()
+        try {
+            if (Patterns.WEB_URL != null && Patterns.WEB_URL.matcher(sharedText).matches()) {
+                return true;
+            }
+        } catch (Throwable ignored) {}
+
+        return ((sharedText.startsWith("http://") || sharedText.startsWith("https://")) && !sharedText.contains(" "))
             || Pattern.matches("magnet:\\?xt=urn:btih:.*?", sharedText);
     }
 

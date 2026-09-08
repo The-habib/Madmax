@@ -16,6 +16,7 @@ import com.termux.shared.termux.extrakeys.ExtraKeysInfo;
 import com.termux.shared.termux.settings.properties.TermuxPropertyConstants;
 import com.termux.shared.termux.settings.properties.TermuxSharedProperties;
 import com.termux.shared.termux.terminal.io.TerminalExtraKeys;
+import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalView;
 
 import org.json.JSONException;
@@ -96,10 +97,32 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
         } else if ("PASTE".equals(key)) {
             if(mTermuxTerminalSessionActivityClient != null)
                 mTermuxTerminalSessionActivityClient.onPasteTextFromClipboard(null);
-        }  else if ("SCROLL".equals(key)) {
+        } else if ("SCROLL".equals(key)) {
             TerminalView terminalView = mTermuxTerminalViewClient.getActivity().getTerminalView();
             if (terminalView != null && terminalView.mEmulator != null)
                 terminalView.mEmulator.toggleAutoScrollDisabled();
+        } else if ("MENU".equals(key) || "ACTIONS".equals(key)) {
+            mActivity.showQuickActionsBottomSheet();
+        } else if ("AI".equals(key)) {
+            mActivity.showAIWorkspaceBottomSheet();
+        } else if ("CLEAR".equals(key)) {
+            TerminalSession session = mActivity.getCurrentSession();
+            if (session != null && session.isRunning()) {
+                session.write("clear\r");
+            }
+        } else if ("CTRLC".equals(key)) {
+            TerminalSession session = mActivity.getCurrentSession();
+            if (session != null && session.isRunning()) {
+                session.write("\u0003");
+            }
+        } else if ("ZOOMIN".equals(key) || "FONT+".equals(key)) {
+            if (mTermuxTerminalViewClient != null) {
+                mTermuxTerminalViewClient.changeFontSize(true);
+            }
+        } else if ("ZOOMOUT".equals(key) || "FONT-".equals(key)) {
+            if (mTermuxTerminalViewClient != null) {
+                mTermuxTerminalViewClient.changeFontSize(false);
+            }
         } else {
             super.onTerminalExtraKeyButtonClick(view, key, ctrlDown, altDown, shiftDown, fnDown);
         }

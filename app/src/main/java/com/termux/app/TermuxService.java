@@ -354,6 +354,10 @@ public final class TermuxService extends Service implements AppShell.AppShellCli
         Logger.logDebug(LOG_TAG, "WakeLocks released successfully");
     }
 
+    public boolean isWakeLockHeld() {
+        return mWakeLock != null;
+    }
+
     /** Process {@link TERMUX_SERVICE#ACTION_SERVICE_EXECUTE} intent to execute a shell command in
      * a foreground TermuxSession or in a background TermuxTask. */
     private void actionServiceExecute(Intent intent) {

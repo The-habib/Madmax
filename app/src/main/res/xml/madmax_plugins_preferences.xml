@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="Plugin Architecture (Phase 3 Preview)">
+
+        <SwitchPreferenceCompat
+            app:key="feature_flag_plugins_hub"
+            app:title="Enable Modular Plugin Hub"
+            app:summary="Sandboxed extension execution and IPC message bridge."
+            app:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Plugin Ecosystem">
+
+        <Preference
+            app:key="plugin_ecosystem_info"
+            app:title="Plugin Specification"
+            app:summary="Compatible with Unix socket commands and custom UI widgets."
+            app:persistent="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

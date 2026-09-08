@@ -16,6 +16,7 @@ import com.termux.shared.termux.shell.command.environment.TermuxShellEnvironment
 import com.termux.shared.termux.shell.am.TermuxAmSocketServer;
 import com.termux.shared.termux.shell.TermuxShellManager;
 import com.termux.shared.termux.theme.TermuxThemeUtils;
+import com.termux.app.madmax.core.MadMaxExtensionManager;
 
 public class TermuxApplication extends Application {
 
@@ -23,6 +24,9 @@ public class TermuxApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
+
+        // Initialize MadMax Extension Layer & Dynamic Colors
+        MadMaxExtensionManager.init(this);
 
         Context context = getApplicationContext();
 

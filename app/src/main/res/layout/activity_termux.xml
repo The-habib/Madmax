@@ -35,7 +35,7 @@
 
             <LinearLayout
                 android:id="@+id/left_drawer"
-                android:layout_width="240dp"
+                android:layout_width="280dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:choiceMode="singleChoice"
@@ -45,19 +45,88 @@
                 android:orientation="vertical"
                 android:background="?attr/termuxActivityDrawerBackground">
 
+                <!-- Modern MadMax Header -->
                 <LinearLayout
+                    android:id="@+id/madmax_drawer_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MADMAX"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.08"
+                            android:textColor="?attr/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/text_drawer_version_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="v1.1.0 • Dev"
+                            android:textSize="11sp"
+                            android:textColor="?android:attr/textColorSecondary" />
+
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/quick_actions_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_quick_actions"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Quick Terminal Actions"
+                        app:tint="?attr/colorPrimary" />
+
+                    <ImageButton
+                        android:id="@+id/ai_workspace_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_ai_workspace"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="AI Command Workspace"
+                        app:tint="?attr/colorPrimary" />
+
+                    <ImageButton
+                        android:id="@+id/dev_dashboard_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_developer_mode"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Developer Diagnostics"
+                        app:tint="?attr/termuxActivityDrawerImageTint" />
+
                     <ImageButton
                         android:id="@+id/settings_button"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_settings"
-                        android:background="@null"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/action_open_settings"
                         app:tint="?attr/termuxActivityDrawerImageTint" />
+
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?attr/colorSurfaceVariant"
+                    android:alpha="0.4"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp" />
 
                 <ListView
                     android:id="@+id/terminal_sessions_list"
@@ -66,30 +135,39 @@
                     android:layout_gravity="top"
                     android:layout_weight="1"
                     android:choiceMode="singleChoice"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
                     android:longClickable="true" />
 
                 <LinearLayout
-                    style="?android:attr/buttonBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="10dp">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/toggle_keyboard_button"
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="match_parent"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:textSize="12sp"
                         android:text="@string/action_toggle_soft_keyboard" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/new_session_button"
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="match_parent"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:textSize="12sp"
                         android:text="@string/action_new_session" />
+
                 </LinearLayout>
+
             </LinearLayout>
 
         </androidx.drawerlayout.widget.DrawerLayout>

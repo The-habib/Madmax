@@ -9,7 +9,7 @@
       BaseActivity Light DarkActionBar theme.
       https://github.com/material-components/material-components-android/blob/1.4.0/lib/java/com/google/android/material/theme/res/values/themes.xml#L33
      -->
-    <style name="Theme.BaseActivity.Light.DarkActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Theme.BaseActivity.Light.DarkActionBar" parent="Theme.Material3.Light">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_400</item>
         <item name="colorPrimaryVariant">@color/red_800</item>
@@ -49,9 +49,9 @@
 
 
     <!-- BaseActivity DayNight DarkActionBar theme. -->
-    <style name="Theme.BaseActivity.DayNight.DarkActionBar" parent="Theme.BaseActivity.Light.DarkActionBar"/>
+    <style name="Theme.BaseActivity.DayNight.DarkActionBar" parent="Theme.Material3.DayNight"/>
     <!-- BaseActivity DayNight NoActionBar theme. -->
-    <style name="Theme.BaseActivity.DayNight.NoActionBar" parent="Theme.BaseActivity.Light.NoActionBar"/>
+    <style name="Theme.BaseActivity.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar"/>
 
 
 
@@ -69,9 +69,8 @@
 
     <!--
       BaseDialog Light theme.
-      https://github.com/material-components/material-components-android/blob/1.4.0/lib/java/com/google/android/material/dialog/res/values/themes.xml#L70
      -->
-    <style name="ThemeOverlay.BaseDialog.Light" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="ThemeOverlay.BaseDialog.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_400</item>
         <item name="colorPrimaryVariant">@color/red_800</item>
