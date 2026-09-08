@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Name (e.g. v1.3.0)'
+        required: true
+        default: 'v1.3.0'
 
 jobs:
   release:
@@ -43,9 +49,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
           files: |
             app/build/outputs/apk/debug/*.apk
             app/build/outputs/apk/debug/SHA256SUMS.txt
           draft: false
-          prerelease: ${{ contains(github.ref, '-dev') || contains(github.ref, '-beta') }}
+          prerelease: ${{ contains(github.ref, '-dev') || contains(github.ref, '-beta') || contains(github.event.inputs.tag_name, '-dev') || contains(github.event.inputs.tag_name, '-beta') }}
           generate_release_notes: true
