@@ -24,6 +24,7 @@ public class AIErrorAnalyzer {
         BINARY_TO_PKG.put("python", "python");
         BINARY_TO_PKG.put("python3", "python");
         BINARY_TO_PKG.put("pip", "python");
+        BINARY_TO_PKG.put("pip3", "python");
         BINARY_TO_PKG.put("node", "nodejs");
         BINARY_TO_PKG.put("npm", "nodejs");
         BINARY_TO_PKG.put("npx", "nodejs");
@@ -33,6 +34,12 @@ public class AIErrorAnalyzer {
         BINARY_TO_PKG.put("clang", "clang");
         BINARY_TO_PKG.put("rustc", "rust");
         BINARY_TO_PKG.put("cargo", "rust");
+        BINARY_TO_PKG.put("go", "golang");
+        BINARY_TO_PKG.put("golang", "golang");
+        BINARY_TO_PKG.put("ruby", "ruby");
+        BINARY_TO_PKG.put("perl", "perl");
+        BINARY_TO_PKG.put("php", "php");
+        BINARY_TO_PKG.put("lua", "lua54");
         BINARY_TO_PKG.put("ffmpeg", "ffmpeg");
         BINARY_TO_PKG.put("nmap", "nmap");
         BINARY_TO_PKG.put("htop", "htop");
@@ -57,6 +64,21 @@ public class AIErrorAnalyzer {
         BINARY_TO_PKG.put("gh", "gh");
         BINARY_TO_PKG.put("rsync", "rsync");
         BINARY_TO_PKG.put("tar", "tar");
+        BINARY_TO_PKG.put("gdb", "gdb");
+        BINARY_TO_PKG.put("lldb", "lldb");
+        BINARY_TO_PKG.put("strace", "strace");
+        BINARY_TO_PKG.put("lsof", "lsof");
+        BINARY_TO_PKG.put("tcpdump", "tcpdump");
+        BINARY_TO_PKG.put("socat", "socat");
+        BINARY_TO_PKG.put("nc", "netcat-openbsd");
+        BINARY_TO_PKG.put("netcat", "netcat-openbsd");
+        BINARY_TO_PKG.put("traceroute", "traceroute");
+        BINARY_TO_PKG.put("ping", "inetutils");
+        BINARY_TO_PKG.put("termux-api", "termux-api");
+        BINARY_TO_PKG.put("proot", "proot");
+        BINARY_TO_PKG.put("proot-distro", "proot-distro");
+        BINARY_TO_PKG.put("tsu", "tsu");
+        BINARY_TO_PKG.put("gradle", "gradle");
     }
 
     /**
@@ -157,7 +179,17 @@ public class AIErrorAnalyzer {
                 true);
         }
 
-        // 8. No space left on device
+        // 8. Git: Merge conflict
+        if (err.contains("CONFLICT (content): Merge conflict in") || err.contains("Automatic merge failed; fix conflicts and then commit the result")) {
+            return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.GIT_ERROR,
+                "A Git merge or rebase encountered conflicting changes across branches.",
+                "Resolve the conflict markers in the affected files or abort the merge.",
+                "git merge --abort",
+                listOf("git status", "git diff", "git rebase --abort"),
+                true);
+        }
+
+        // 9. No space left on device
         if (err.contains("No space left on device") || err.contains("ENOSPC")) {
             return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.STORAGE_FULL,
                 "Device internal storage or app cache partition is completely full.",
@@ -167,7 +199,7 @@ public class AIErrorAnalyzer {
                 true);
         }
 
-        // 9. Connection refused
+        // 10. Connection refused
         if (err.contains("Connection refused") || err.contains("ECONNREFUSED")) {
             return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.NETWORK_UNREACHABLE,
                 "The remote host rejected the network connection or the target server service is not running.",
@@ -177,7 +209,27 @@ public class AIErrorAnalyzer {
                 false);
         }
 
-        // 10. Segmentation fault
+        // 11. DNS resolution failure
+        if (err.contains("Could not resolve host") || err.contains("Name or service not known") || err.contains("ENOTFOUND")) {
+            return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.NETWORK_UNREACHABLE,
+                "DNS query failed to resolve the domain name into an IP address.",
+                "Verify network connectivity and DNS server configuration.",
+                "ping -c 3 1.1.1.1",
+                listOf("cat $PREFIX/etc/resolv.conf", "termux-info"),
+                false);
+        }
+
+        // 12. Syntax error
+        if (err.contains("syntax error near unexpected token") || err.contains("syntax error:")) {
+            return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.SYNTAX_ERROR,
+                "Shell script parser encountered invalid command syntax or unclosed quotes.",
+                "Inspect the command line for unmatched quotes, parentheses, or rogue characters.",
+                "",
+                listOf("bash -n script.sh", "echo $SHELL"),
+                false);
+        }
+
+        // 13. Segmentation fault
         if (err.contains("Segmentation fault") || err.contains("SIGSEGV")) {
             return new AIErrorDiagnosis(err, AIErrorDiagnosis.ErrorCategory.GENERAL_ERROR,
                 "Process crashed due to invalid memory access or binary ABI incompatibility.",
