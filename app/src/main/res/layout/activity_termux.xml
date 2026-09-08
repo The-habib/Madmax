@@ -76,7 +76,7 @@
                             android:id="@+id/text_drawer_version_badge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="v1.1.0 • Dev"
+                            android:text="v1.3.0 • Release"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary" />
 
