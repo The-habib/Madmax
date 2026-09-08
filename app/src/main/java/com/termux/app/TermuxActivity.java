@@ -572,6 +572,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         }
 
         setDeveloperDashboardButtonView();
+        setQuickActionsButtonView();
         setAIWorkspaceButtonView();
     }
 
@@ -643,6 +644,180 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             }
         });
         sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ai.ui.AIWorkspaceBottomSheet.TAG);
+    }
+
+    private void setQuickActionsButtonView() {
+        ImageButton quickActionsButton = findViewById(R.id.quick_actions_button);
+        if (quickActionsButton != null) {
+            quickActionsButton.setOnClickListener(v -> {
+                getDrawer().closeDrawers();
+                showQuickActionsBottomSheet();
+            });
+        }
+    }
+
+    public void showQuickActionsBottomSheet() {
+        showQuickActionsBottomSheet(com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TAB_CONTROLS);
+    }
+
+    public void showQuickActionsBottomSheet(int initialTab) {
+        com.termux.app.madmax.ui.actions.QuickActionsBottomSheet sheet =
+            com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.newInstance(initialTab);
+        sheet.setActionCallback(new com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TerminalActionCallback() {
+            @Override
+            public void onInsertText(@NonNull String text) {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write(text);
+                }
+            }
+
+            @Override
+            public void onExecuteCommand(@NonNull String command) {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write(command + "\n");
+                }
+            }
+
+            @Override
+            public void onPasteFromClipboard() {
+                if (mTermuxTerminalSessionActivityClient != null) {
+                    mTermuxTerminalSessionActivityClient.onPasteTextFromClipboard(null);
+                }
+            }
+
+            @Override
+            public void onSendInterrupt() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write("\u0003");
+                }
+            }
+
+            @Override
+            public void onSendSuspend() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write("\u001A");
+                }
+            }
+
+            @Override
+            public void onSendEof() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write("\u0004");
+                }
+            }
+
+            @Override
+            public void onClearScreen() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write("clear\r");
+                }
+            }
+
+            @Override
+            public void onResetTerminal() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.isRunning()) {
+                    session.write("reset\r");
+                }
+            }
+
+            @Override
+            public void onChangeFontSize(boolean increase) {
+                if (mTermuxTerminalViewClient != null) {
+                    mTermuxTerminalViewClient.changeFontSize(increase);
+                }
+            }
+
+            @Override
+            public void onResetFontSize() {
+                int defaultFontSize = com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences.getDefaultFontSizes(TermuxActivity.this)[0];
+                mPreferences.setFontSize(defaultFontSize);
+                mTerminalView.setTextSize(mPreferences.getFontSize());
+            }
+
+            @Override
+            public int getCurrentFontSize() {
+                return mPreferences.getFontSize();
+            }
+
+            @Override
+            public void onToggleKeyboard() {
+                if (mTermuxTerminalViewClient != null) {
+                    mTermuxTerminalViewClient.onToggleSoftKeyboardRequest();
+                }
+            }
+
+            @Override
+            public void onToggleWakeLock() {
+                boolean held = isWakeLockHeld();
+                startService(new Intent(TermuxActivity.this, TermuxService.class)
+                    .setAction(held ? com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE.ACTION_WAKE_UNLOCK : com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE.ACTION_WAKE_LOCK));
+            }
+
+            @Override
+            public boolean isWakeLockHeld() {
+                return mTermuxService != null && mTermuxService.isWakeLockHeld();
+            }
+
+            @Override
+            public void onNewSession(boolean failsafe) {
+                if (mTermuxTerminalSessionActivityClient != null) {
+                    mTermuxTerminalSessionActivityClient.addNewSession(failsafe, null);
+                }
+            }
+
+            @Override
+            public void onRenameSession() {
+                TerminalSession currentSession = getCurrentSession();
+                if (currentSession != null && mTermuxTerminalSessionActivityClient != null) {
+                    mTermuxTerminalSessionActivityClient.renameSession(currentSession);
+                }
+            }
+
+            @Override
+            public void onOpenSessionDrawer() {
+                DrawerLayout drawerLayout = getDrawer();
+                if (drawerLayout != null) {
+                    drawerLayout.openDrawer(Gravity.LEFT);
+                }
+            }
+
+            @Override
+            public void onScrollToTop() {
+                if (mTerminalView != null && mTerminalView.mEmulator != null) {
+                    mTerminalView.scrollTo(0, 0);
+                }
+            }
+
+            @Override
+            public void onScrollToBottom() {
+                if (mTerminalView != null && mTerminalView.mEmulator != null) {
+                    mTerminalView.mEmulator.clearScrollCounter();
+                }
+            }
+
+            @Nullable
+            @Override
+            public String onCaptureTranscript() {
+                TerminalSession session = getCurrentSession();
+                if (session != null && session.getEmulator() != null && session.getEmulator().getScreen() != null) {
+                    return session.getEmulator().getScreen().getTranscriptText();
+                }
+                return null;
+            }
+
+            @Override
+            public void onOpenAIWorkspace() {
+                showAIWorkspaceBottomSheet();
+            }
+        });
+        sheet.show(getSupportFragmentManager(), com.termux.app.madmax.ui.actions.QuickActionsBottomSheet.TAG);
     }
 
     private void setNewSessionButtonView() {
@@ -925,8 +1100,12 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         return getTerminalToolbarViewPager().getCurrentItem() == 0;
     }
 
-    public boolean isTerminalToolbarTextInputViewSelected() {
+    public boolean isTerminalToolbarQuickActionsSelected() {
         return getTerminalToolbarViewPager().getCurrentItem() == 1;
+    }
+
+    public boolean isTerminalToolbarTextInputViewSelected() {
+        return getTerminalToolbarViewPager().getCurrentItem() == 2;
     }
 
 

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/terminal_toolbar_quick_actions_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:id="@+id/terminal_toolbar_quick_actions_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="2dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_quick_menu"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="⚡ Menu"
+            android:textColor="#80DEEA"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:contentDescription="Open Quick Actions and Accessibility Menu" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_ai"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="🤖 AI"
+            android:textColor="#CE93D8"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:contentDescription="Open AI Command Workspace" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_paste"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="📋 Paste"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Paste text from clipboard" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_clear"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="🧹 Clear"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Clear terminal screen" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_ctrl_c"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="🛑 ^C"
+            android:textColor="#FF8A80"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:contentDescription="Interrupt running process" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_snippets"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="📜 Snips"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Quick command snippets" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_zoom_in"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="🔤 A+"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Increase font size" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_zoom_out"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="🔤 A-"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Decrease font size" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_keyboard"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="⌨ Kbd"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Toggle virtual keyboard" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toolbar_copy_all"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="📑 Copy"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:contentDescription="Copy terminal screen text" />
+
+    </LinearLayout>
+</HorizontalScrollView>
