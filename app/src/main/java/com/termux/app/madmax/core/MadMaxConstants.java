@@ -9,7 +9,7 @@ public final class MadMaxConstants {
 
     /** MadMax Application Branding */
     public static final String MADMAX_APP_NAME = "MadMax";
-    public static final String MADMAX_VERSION = "1.1.0";
+    public static final String MADMAX_VERSION = "1.5.0";
     public static final String MADMAX_REPO_URL = "https://github.com/The-habib/Madmax";
 
     /** Shared preferences file name for MadMax extension configs */

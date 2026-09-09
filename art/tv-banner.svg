@@ -15,9 +15,8 @@
 
  <text id="shell_prompt"
        x="200"
-       y="410"
        style="fill: #ffffff; font-size: 210px; font-family: Menlo, Monospace;">
-   <tspan>Termux  ▌</tspan>
+   <tspan>MadMax  ▌</tspan>
  </text>
 
 </svg>

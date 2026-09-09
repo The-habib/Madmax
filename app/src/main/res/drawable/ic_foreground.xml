@@ -4,25 +4,14 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Keep in sync with non-adaptive ic_launcher.xml -->
+    <!-- MadMax Prompt Chevron -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M34,38
-                          h6
-                          l12,16
-                          l-12,16
-                          h-6
-                          l12,-16
-                          "
-        />
+        android:fillColor="#000000"
+        android:pathData="M23.4,29.5 L32.7,29.5 L50.9,53.7 L32.7,77.8 L23.4,77.8 L41.6,53.7 Z" />
 
+    <!-- MadMax Prompt Underscore -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M56,66
-                          h18
-                          v4
-                          h-18
-                          "
-        />
+        android:fillColor="#000000"
+        android:pathData="M56.9,71.7 H84.4 V77.7 H56.9 Z" />
 
 </vector>

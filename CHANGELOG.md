@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.0] - 2026-09-09
+
+### Added
+- **Complete End-to-End Application Name Rebrand**: Updated user-facing application name and labels from `Termux` to `MadMax` across all application manifests, `strings.xml`, `TermuxConstants`, notification channels, and build configurations.
+- **Terminal Prompt Launcher Assets**: Integrated new minimalist `> _` brand logo across all 5 Android density buckets (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) for both square and circular launcher styles.
+- **Adaptive Vector Icon Refresh**: Updated adaptive icon layers with pure white backgrounds and precision-aligned black prompt vectors with full Android 13+ Material You monochrome themed icon support.
+- **Android TV & Master Artwork Refresh**: Replaced TV banner (320x180) and repository vector assets in `art/` with the new MadMax prompt branding.
+- **Drawer Header Logo Integration**: Embedded a Material 3 rounded card brand logo container directly inside the session navigation drawer header.
+
+---
+
 ## [1.1.0-dev] - 2026-08-16
 
 ### Added

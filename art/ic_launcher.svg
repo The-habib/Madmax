@@ -1,26 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <!-- White background -->
+    <rect width="48" height="48" rx="8" fill="#FFFFFF"/>
 
-    <!-- Screen and border. -->
-    <path fill="#000"
-          stroke="#BFCBCD"
-          stroke-width="2"
-          d="M9,6
-             l30,0
-             q3 0,3 3
-             l0,30
-             q0 3, -3 3
-             l-30,0
-             q-3 0, -3-3
-             l0 -30
-             q0 -3, 3 -3"
-    />
+    <!-- MadMax Prompt Chevron -->
+    <path fill="#000000" d="M10.4,13.1 L14.5,13.1 L22.6,23.9 L14.5,34.6 L10.4,34.6 L18.5,23.9 Z"/>
 
-    <!-- Block cursor. -->
-    <path fill="#FFF"
-          d="M14,14
-             l5,0
-             l0,10
-             l-5,0"
-    />
-
+    <!-- MadMax Prompt Underscore -->
+    <path fill="#000000" d="M25.3,31.9 H37.5 V34.5 H25.3 Z"/>
 </svg>
